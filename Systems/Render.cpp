@@ -2,29 +2,33 @@
 // Created by Henrik Nielsen on 19/11/2018.
 //
 
+
+/* Disabled for Windows development, works on linux when GLUT is installed
+
 #include "Render.h"
 #include <GLUT/glut.h>  // GLUT, include glu.h and gl.h
 
+ // GLUT runs as a console application starting at main()
 void RenderSquare(GLfloat, GLfloat, GLfloat);
 
 // global variable
 GLfloat angle = 0.0f;  // rotational angle of the shapes
 int refreshMills = 16; // refresh interval in milliseconds
 
-/* Initialize OpenGL Graphics */
+// Initialize OpenGL Graphics
 void initGL() {
     // Set "clearing" or background color
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f); // Black and opaque
 }
 
-/* Called back when timer expired */
+// Called back when timer expired
 void Timer(int value) {
     glutPostRedisplay();      // Post re-paint request to activate display()
     glutTimerFunc(refreshMills, Timer, 0); // next Timer call milliseconds later
 }
 
-/* Handler for window-repaint event. Call back when the window first appears and
-   whenever the window needs to be re-painted. */
+// Handler for window-repaint event. Call back when the window first appears and
+// whenever the window needs to be re-painted.
 void display() {
     glClear(GL_COLOR_BUFFER_BIT);   // Clear the color buffer
     glMatrixMode(GL_MODELVIEW);     // To operate on Model-View matrix
@@ -54,8 +58,8 @@ void RenderSquare(GLfloat x, GLfloat y, GLfloat directionInDegrees)
     glPopMatrix();
 }
 
-/* Handler for window re-size event. Called back when the window first appears and
-   whenever the window is re-sized with its new width and height */
+// Handler for window re-size event. Called back when the window first appears and
+// whenever the window is re-sized with its new width and height
 void reshape(GLsizei width, GLsizei height) {  // GLsizei for non-negative integer
     // Compute aspect ratio of the new window
     if (height == 0) height = 1;                // To prevent divide by 0
@@ -89,3 +93,4 @@ void Setup(int argc, char** argv)
     initGL();                       // Our own OpenGL initialization
     glutMainLoop();                 // Enter the infinite event-processing loop
 }
+*/

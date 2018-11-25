@@ -5,11 +5,19 @@
 #ifndef TRAFFICSIMULATOR_SYSTEM_H
 #define TRAFFICSIMULATOR_SYSTEM_H
 
+#include <tuple>
 
 class System {
-
-    void SetRequiredComponents();
+public:
+    template<typename... Components>
+    void SetRequiredComponents(Components... components);
 };
+
+template<typename... Components>
+void System::SetRequiredComponents(Components... componentsArg) {
+    std::tuple<Components...> components{componentsArg...};
+
+}
 
 
 #endif //TRAFFICSIMULATOR_SYSTEM_H
