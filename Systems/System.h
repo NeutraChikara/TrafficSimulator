@@ -5,19 +5,30 @@
 #ifndef TRAFFICSIMULATOR_SYSTEM_H
 #define TRAFFICSIMULATOR_SYSTEM_H
 
+#include "../Components/Component.h"
 #include <tuple>
+#include <vector>
 
 class System {
 public:
-    template<typename... Components>
-    void SetRequiredComponents(Components... components);
+    template<typename Component, typename... Components>
+    constexpr void SetRequiredComponents();
+    void Update();
+
+private:
+    std::vector<unsigned int> IdsOfRequiredComponents;
 };
 
-template<typename... Components>
-void System::SetRequiredComponents(Components... componentsArg) {
-    std::tuple<Components...> components{componentsArg...};
+template<typename ReqComponent, typename... ReqComponents>
+constexpr void System::SetRequiredComponents() {
+    static_assert( std::is_base_of<Component, ReqComponent>::value, "Passed type must be a subclass of Component");
 
+    IdsOfRequiredComponents.push_back(ReqComponent::Id);
+
+    if constexpr(sizeof...(ReqComponents) > 0)
+        SetRequiredComponents<ReqComponents...>();
 }
 
-
 #endif //TRAFFICSIMULATOR_SYSTEM_H
+
+
