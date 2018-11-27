@@ -6,6 +6,7 @@
 #define TRAFFICSIMULATOR_SYSTEM_H
 
 #include "../Components/Component.h"
+#include "../Components/ComponentUtility.h"
 #include <tuple>
 #include <vector>
 
@@ -23,7 +24,8 @@ template<typename ReqComponent, typename... ReqComponents>
 constexpr void System::SetRequiredComponents() {
     static_assert( std::is_base_of<Component, ReqComponent>::value, "Passed type must be a subclass of Component");
 
-    IdsOfRequiredComponents.push_back(ReqComponent::Id);
+    auto uniqueComponentTypeId = ComponentUtility<ReqComponent>::GetId();
+    IdsOfRequiredComponents.push_back(uniqueComponentTypeId);
 
     if constexpr(sizeof...(ReqComponents) > 0)
         SetRequiredComponents<ReqComponents...>();

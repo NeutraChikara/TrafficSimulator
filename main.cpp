@@ -13,11 +13,17 @@
 #include "Components/TestComponent1.h"
 #include "Components/TestComponent2.h"
 #include "Components/ComponentUtility.h"
+#include "Managers/World.h"
 #include <iostream>
 
 int main() {
     System system;
     system.SetRequiredComponents<TestComponent1, TestComponent2>();
+
+    World world;
+    auto entity = world.CreateEntity();
+    entity.AddComponent<TestComponent1>();
+    auto testComponent = entity.GetComponent<TestComponent1>();
 
     std::cout << ComponentUtility<TestComponent1>::GetId() << std::endl;
     std::cout << ComponentUtility<TestComponent2>::GetId() << std::endl;

@@ -9,8 +9,7 @@
 #include "Component.h"
 
 class TestComponent1 : public Component {
-public:
-    static unsigned int Id;
+
 };
 
 

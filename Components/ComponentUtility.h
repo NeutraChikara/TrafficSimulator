@@ -24,7 +24,6 @@ struct ComponentUtility : ComponentUtilityHelper
         static auto id = id_counter++;
         return id;
     }
-
 };
 
 
