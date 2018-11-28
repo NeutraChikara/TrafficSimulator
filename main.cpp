@@ -23,7 +23,7 @@ int main() {
     World world;
     auto entity = world.CreateEntity();
     entity.AddComponent<TestComponent1>();
-    auto testComponent = entity.GetComponent<TestComponent1>();
+    entity.AddComponent<TestComponent2>(10);
 
     std::cout << ComponentUtility<TestComponent1>::GetId() << std::endl;
     std::cout << ComponentUtility<TestComponent2>::GetId() << std::endl;

@@ -7,7 +7,6 @@
 
 
 #include "../Entities/Entity.h"
-#include "EntityManager.h"
 #include <memory>
 #include <vector>
 

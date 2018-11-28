@@ -9,7 +9,8 @@
 #include "Component.h"
 
 class TestComponent2 : public Component {
-
+public:
+    TestComponent2(int i);
 };
 
 

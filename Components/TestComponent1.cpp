@@ -4,4 +4,3 @@
 
 #include "TestComponent1.h"
 
-unsigned int TestComponent1::Id;

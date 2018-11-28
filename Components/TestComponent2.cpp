@@ -4,4 +4,4 @@
 
 #include "TestComponent2.h"
 
-unsigned int TestComponent2::Id;
+TestComponent2::TestComponent2(int i) {}
