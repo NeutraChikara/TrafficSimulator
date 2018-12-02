@@ -15,9 +15,9 @@ public:
     World();
     Entity CreateEntity();
     void DestroyEntity(Entity e);
+    std::vector<Entity> createdEntities;
 private:
     std::unique_ptr<EntityManager> entityManager;
-    std::vector<Entity> createdEntities;
     std::vector<Entity> destroyedEntities;
 };
 
