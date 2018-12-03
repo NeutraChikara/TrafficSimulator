@@ -60,7 +60,8 @@ template<typename T>
 void EntityManager::AddComponent(Entity e, T component) {
     const auto componentId = ComponentUtility<T>::GetId();
     const auto entityId = e.GetId();
-    std::shared_ptr<Pool<T>> componentPool = accommodateComponent<T>(); // TODO: Make pool, see https://github.com/tapio/ecs for how
+
+    //std::shared_ptr<Pool<T>> componentPool = accommodateComponent<T>(); // TODO: Make pool, see https://github.com/tapio/ecs for how
 
     //if (entityId >= componentPool->getSize()) {
     //    componentPool->resize(versions.size());
