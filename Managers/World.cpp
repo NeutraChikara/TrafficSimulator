@@ -1,24 +1,24 @@
 //
 // Created by henrik on 27-11-2018.
 //
-
 #include "World.h"
 
+void World::Addmask(Entity::Id id,int ComponentId ){
+    mask[id] |= 1<<ComponentId;
+}
+
+uint32_t World::Getmask(Entity::Id id) {
+    return mask[id];
+}
+
 World::World() {
-    // Kunne have lavet dependency injection i stedet, men kræver et interface samt ekstra håndtering af levetiden
-    entityManager = std::make_unique<EntityManager>();
+
 }
-
-
+//TODO: Avoid using list of entities
 Entity World::CreateEntity() {
-    auto e = entityManager->CreateEntity();
-    createdEntities.push_back(e);
-    return e;
+    auto id = entities.size();
+    entities.push_back(Entity(id));
+    return entities[id];
 }
-
-void World::DestroyEntity(Entity e) {
-    destroyedEntities.push_back(e);
-}
-
 
 

@@ -10,7 +10,7 @@
 
 class TestComponent2 : public Component {
 public:
-    TestComponent2(int i);
+    TestComponent2(int i =1);
 };
 
 

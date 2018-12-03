@@ -1,27 +1,27 @@
 //
 // Created by TobiasHK on 01-Dec-18.
 //
-#include <iostream>
-#include "System.h"
-#include "../Components/TestComponent1.h"
-#include "../Entities/Entity.h"
-
 #ifndef TRAFFICSIMULATOR_LOGGER_H
 #define TRAFFICSIMULATOR_LOGGER_H
 
+#include <iostream>
+#include "System.h"
+#include "../Components/NameComponent.h"
+#include "../Entities/Entity.h"
 
 class Logger : public System {
 public:
     Logger(World & world):System(world){
-        this->SetRequiredComponents<TestComponent1>();
+        this->SetRequiredComponents<NameComponent>();
     }
 
     void OnUpdate(Entity e){
-        std::cout << "OnUpdate()" << std::endl;
-        std::cout << (int)e.GetId() << std::endl;
+        std::cout << __FUNCTION__;
+        std::cout << (int)e.GetId() << world.GetComponent<NameComponent>(e.GetId()).Name<< std::endl;
+
     }
 
 };
 
 
-#endif //TRAFFICSIMULATOR_LOGGER_H
+#endif

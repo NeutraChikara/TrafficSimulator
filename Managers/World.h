@@ -7,19 +7,41 @@
 
 
 #include "../Entities/Entity.h"
-#include <memory>
+#include "../Components/NameComponent.h"
+#include "../Components/TestComponent2.h"
+#include <tuple>
 #include <vector>
 
+typedef std::tuple<NameComponent,TestComponent2> Components;
 class World {
 public:
     World();
+
+    static const uint8_t EntityCount =100;
     Entity CreateEntity();
+    template<typename T>
+    void AddComponent(T component,Entity entity );
+    template<typename T>
+    T& GetComponent(Entity::Id id );
+    uint32_t Getmask(Entity::Id id);
     void DestroyEntity(Entity e);
-    std::vector<Entity> createdEntities;
+    std::vector<Entity> entities;
 private:
-    std::unique_ptr<EntityManager> entityManager;
-    std::vector<Entity> destroyedEntities;
+    void Addmask(Entity::Id id,int ComponentId );
+    Components components[EntityCount];
+    uint32_t mask[EntityCount]{0};
 };
+
+template<typename T>
+void World::AddComponent(T component, Entity  entity ) {
+    std::get<T>(components[entity.GetId()]) = component;
+    Addmask(entity.GetId(),ComponentUtility<T>::GetId());
+}
+
+template<typename T>
+T &World::GetComponent(Entity::Id id) {
+    return std::get<T>(components[id]);
+}
 
 
 #endif //TRAFFICSIMULATOR_WORLD_H

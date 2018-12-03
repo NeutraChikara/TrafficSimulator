@@ -5,11 +5,12 @@
 #ifndef TRAFFICSIMULATOR_TESTCOMPONENT1_H
 #define TRAFFICSIMULATOR_TESTCOMPONENT1_H
 
-
+#include <string>
 #include "Component.h"
 
-class TestComponent1 : public Component {
-
+class NameComponent : public Component {
+public:
+    std::string Name = "hej";
 };
 
 
