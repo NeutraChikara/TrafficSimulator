@@ -15,7 +15,8 @@ System::System(World & world):world(world) {
 }
 
 bool System::HasRequiredComponents(Entity entity) {
-    return world.Getmask(entity.GetId())&&RequiredComponentsMask == RequiredComponentsMask;
+    auto b = (world.Getmask(entity.GetId()) & RequiredComponentsMask) == RequiredComponentsMask;
+    return (world.Getmask(entity.GetId()) & RequiredComponentsMask) == RequiredComponentsMask;
 }
 
 

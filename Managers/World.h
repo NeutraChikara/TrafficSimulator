@@ -5,14 +5,16 @@
 #ifndef TRAFFICSIMULATOR_WORLD_H
 #define TRAFFICSIMULATOR_WORLD_H
 
-
 #include "../Entities/Entity.h"
 #include "../Components/NameComponent.h"
 #include "../Components/TestComponent2.h"
+#include "../Components/ComponentUtility.h"
+#include "../Components/Velocity.h"
+#include "../Components/Position.h"
 #include <tuple>
 #include <vector>
 
-typedef std::tuple<NameComponent,TestComponent2> Components;
+typedef std::tuple<NameComponent,TestComponent2, Velocity, Position> Components;
 class World {
 public:
     World();
@@ -38,10 +40,12 @@ void World::AddComponent(T component, Entity  entity ) {
     Addmask(entity.GetId(),ComponentUtility<T>::GetId());
 }
 
+//TODO: Should return a copy and have set/update component method
 template<typename T>
 T &World::GetComponent(Entity::Id id) {
     return std::get<T>(components[id]);
 }
+
 
 
 #endif //TRAFFICSIMULATOR_WORLD_H

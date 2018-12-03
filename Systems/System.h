@@ -21,6 +21,7 @@ public:
 
     void Update();
 
+protected:
     virtual void OnUpdate(Entity e) = 0;
 
 private:
@@ -34,7 +35,6 @@ constexpr void System::SetRequiredComponents() {
     static_assert(std::is_base_of<Component, ReqComponent>::value, "Passed type must be a subclass of Component");
 
     RequiredComponentsMask |= 1 <<ComponentUtility<ReqComponent>::GetId();
-    std::cout <<RequiredComponentsMask<<std::endl;
 
     if constexpr(sizeof...(ReqComponents) > 0)
         SetRequiredComponents<ReqComponents...>();
@@ -42,6 +42,6 @@ constexpr void System::SetRequiredComponents() {
 }
 
 
-#endif TRAFFICSIMULATOR_SYSTEM_H
+#endif //TRAFFICSIMULATOR_SYSTEM_H
 
 
