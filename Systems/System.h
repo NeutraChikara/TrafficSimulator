@@ -19,7 +19,7 @@ public:
     World & world;
     System(World & world);
 
-    void Update();
+    virtual void Update();
 
 protected:
     virtual void OnUpdate(Entity e) = 0;

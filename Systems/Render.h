@@ -9,8 +9,12 @@
 
 
 
-class Render : System {
-    Render();
+class Render : public System {
+public:
+    Render(World &world, void(* loop)(void));
+    void OnUpdate(Entity e);
+    void Update();
+    void Start();
 };
 
 

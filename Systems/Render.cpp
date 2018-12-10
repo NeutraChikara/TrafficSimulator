@@ -3,17 +3,14 @@
 //
 
 
-/* Disabled for Windows development, works on linux when GLUT is installed
+ //Disable for Windows development, works on linux when GLUT is installed
 
 #include "Render.h"
 #include <GLUT/glut.h>  // GLUT, include glu.h and gl.h
 
  // GLUT runs as a console application starting at main()
 void RenderSquare(GLfloat, GLfloat, GLfloat);
-
-// global variable
-GLfloat angle = 0.0f;  // rotational angle of the shapes
-int refreshMills = 16; // refresh interval in milliseconds
+Render *sy;
 
 // Initialize OpenGL Graphics
 void initGL() {
@@ -23,6 +20,7 @@ void initGL() {
 
 // Called back when timer expired
 void Timer(int value) {
+    int refreshMills = 3000; // refresh interval in milliseconds
     glutPostRedisplay();      // Post re-paint request to activate display()
     glutTimerFunc(refreshMills, Timer, 0); // next Timer call milliseconds later
 }
@@ -33,14 +31,10 @@ void display() {
     glClear(GL_COLOR_BUFFER_BIT);   // Clear the color buffer
     glMatrixMode(GL_MODELVIEW);     // To operate on Model-View matrix
 
-    RenderSquare(-1, 0, -5);
-    RenderSquare(0, 0.7, 5);
-    RenderSquare(1, 0, angle);
 
     glutSwapBuffers();   // Double buffered - swap the front and back buffers
 
     // Change the rotational angle after each display()
-    angle += 1.0f;
 }
 
 void RenderSquare(GLfloat x, GLfloat y, GLfloat directionInDegrees)
@@ -80,17 +74,44 @@ void reshape(GLsizei width, GLsizei height) {  // GLsizei for non-negative integ
     }
 }
 
-void Setup(int argc, char** argv)
+void Setup(int argc, char** argv, void (*loop)(void))
 {
     glutInit(&argc, argv);          // Initialize GLUT
     glutInitDisplayMode(GLUT_DOUBLE);  // Enable double buffered mode
     glutInitWindowSize(640, 480);   // Set the window's initial width & height - non-square
     glutInitWindowPosition(50, 50); // Position the window's initial top-left corner
     glutCreateWindow("Traffic simulator");  // Create window with the given title
-    glutDisplayFunc(display);       // Register callback handler for window re-paint event
+    glutDisplayFunc( loop);       // Register callback handler for window re-paint event
     glutReshapeFunc(reshape);       // Register callback handler for window re-size event
-    glutTimerFunc(0, Timer, 0);     // First timer call immediately
+    glutTimerFunc(3000, Timer, 0);     // First timer call immediately
+
     initGL();                       // Our own OpenGL initialization
+}
+
+void Render::Update() {
+
+    glClear(GL_COLOR_BUFFER_BIT);   // Clear the color buffer
+    glMatrixMode(GL_MODELVIEW);     // To operate on Model-View matrix
+
+    System::Update();
+
+    glutSwapBuffers();   // Double buffered - swap the front and back buffers
+
+}
+
+
+void Render::OnUpdate(Entity e) {
+    auto pos = world.GetComponent<Position>(e.GetId());
+    RenderSquare(pos.X, pos.Y, 0);
+}
+
+Render::Render(World &world, void (*loop)(void)) : System(world) {
+    sy = this;
+    this->SetRequiredComponents<Position>();
+    Setup(0, nullptr, loop);
+}
+
+void Render::Start() {
     glutMainLoop();                 // Enter the infinite event-processing loop
 }
-*/
+

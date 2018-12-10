@@ -14,26 +14,28 @@
 #include "Systems/Logger.h"
 #include "Systems/Move.h"
 #include "Components/Velocity.h"
+#include "Systems/Render.h"
 #include <iostream>
+static World world;
+void Loop();
+Logger logger(world);
+Move move(world);
+Render render(world,Loop);
 
 int main() {
-
-    World world;
     auto entity = world.CreateEntity();
-
 
     world.CreateEntity();
     world.CreateEntity();
     world.AddComponent(Velocity(1,1), entity);
-    world.AddComponent(Position(0,0), entity);
-    Logger logger(world);
+    world.AddComponent(Position(-1,-1), entity);
 
-    logger.Update();
-
-    Move move(world);
-    move.Update();
-
-    logger.Update();
+    render.Start();
 }
 
 
+void Loop(){
+    logger.Update();
+    move.Update();
+    render.Update();
+}
