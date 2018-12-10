@@ -10,11 +10,11 @@
 #include "../Components/TestComponent2.h"
 #include "../Components/ComponentUtility.h"
 #include "../Components/Velocity.h"
-#include "../Components/Position.h"
+#include "../Components/Transform.h"
 #include <tuple>
 #include <vector>
 
-typedef std::tuple<NameComponent,TestComponent2, Velocity, Position> Components;
+typedef std::tuple<NameComponent,TestComponent2, Velocity, Transform> Components;
 class World {
 public:
     World();

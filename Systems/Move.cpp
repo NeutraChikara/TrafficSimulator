@@ -3,15 +3,15 @@
 //
 
 #include "Move.h"
-#include "../Components/Position.h"
+#include "../Components/Transform.h"
 #include "../Components/Velocity.h"
 
 Move::Move(World &world) : System(world) {
-    SetRequiredComponents<Position, Velocity>();
+    SetRequiredComponents<Transform, Velocity>();
 }
 
 void Move::OnUpdate(Entity e) {
-    auto &pos = world.GetComponent<Position>(e.GetId());
+    auto &pos = world.GetComponent<Transform>(e.GetId());
     auto vel = world.GetComponent<Velocity>(e.GetId());
 
     pos.X += vel.Dx;

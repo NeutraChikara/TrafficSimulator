@@ -8,18 +8,17 @@
 #include "System.h"
 #include "../Components/NameComponent.h"
 #include "../Entities/Entity.h"
-#include "../Components/Position.h"
+#include "../Components/Transform.h"
 
 class Logger : public System {
 public:
     Logger(World & world):System(world){
-        this->SetRequiredComponents<Position>();
+        this->SetRequiredComponents<Transform>();
     }
 
     void OnUpdate(Entity e){
-        std::cout << __FUNCTION__ << std::endl;
-        std::cout << "x: " <<  world.GetComponent<Position>(e.GetId()).X << std::endl;
-        std::cout << "y: " <<  world.GetComponent<Position>(e.GetId()).Y << std::endl;
+        std::cout << "Id: " << e.GetId() << " " << "x: " <<  world.GetComponent<Transform>(e.GetId()).X << std::endl;
+        std::cout << "Id: " << e.GetId() << " " << "y: " <<  world.GetComponent<Transform>(e.GetId()).Y << std::endl;
     }
 
 };

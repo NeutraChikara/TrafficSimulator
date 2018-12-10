@@ -8,9 +8,9 @@
 
 #include "Component.h"
 
-struct Position : Component {
-    Position(int x = 0, int y = 0);
-
+struct Transform : Component {
+    Transform(int x = 0, int y = 0, int orientation = 0);
+    int Orientation;
     int X;
     int Y;
 };

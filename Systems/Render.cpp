@@ -9,7 +9,7 @@
 #include <GLUT/glut.h>  // GLUT, include glu.h and gl.h
 
  // GLUT runs as a console application starting at main()
-void RenderSquare(GLfloat, GLfloat, GLfloat);
+void RenderRectangle(GLfloat, GLfloat, GLfloat);
 Render *sy;
 
 // Initialize OpenGL Graphics
@@ -20,7 +20,7 @@ void initGL() {
 
 // Called back when timer expired
 void Timer(int value) {
-    int refreshMills = 3000; // refresh interval in milliseconds
+    int refreshMills = 16; // refresh interval in milliseconds
     glutPostRedisplay();      // Post re-paint request to activate display()
     glutTimerFunc(refreshMills, Timer, 0); // next Timer call milliseconds later
 }
@@ -37,17 +37,19 @@ void display() {
     // Change the rotational angle after each display()
 }
 
-void RenderSquare(GLfloat x, GLfloat y, GLfloat directionInDegrees)
+void RenderRectangle(GLfloat x, GLfloat y, GLfloat directionInDegrees)
 {
     glPushMatrix();
-    glTranslatef(x, y, 0);
+    glTranslatef(x/10000, y/10000, 0);
     glRotatef(directionInDegrees, 0.0f, 0.0f, 1.0f);
     glBegin(GL_QUADS);
     glColor3f(0.7f, 0.7f, 0.7f);
-    glVertex2f(-0.02f, -0.02f);
-    glVertex2f( 0.02f, -0.02f);
-    glVertex2f( 0.02f,  0.02f);
-    glVertex2f(-0.02f,  0.02f);
+    auto size = 0.005f;
+    auto length = 0.004f;
+    glVertex2f(-size-length, -size);
+    glVertex2f( size+length, -size);
+    glVertex2f( size+length,  size);
+    glVertex2f(-size-length,  size);
     glEnd();
     glPopMatrix();
 }
@@ -65,12 +67,15 @@ void reshape(GLsizei width, GLsizei height) {  // GLsizei for non-negative integ
     // Set the aspect ratio of the clipping area to match the viewport
     glMatrixMode(GL_PROJECTION);  // To operate on the Projection matrix
     glLoadIdentity();
+
+    int clippingPlaneSize = 1;
+
     if (width >= height) {
-        // aspect >= 1, set the height from -1 to 1, with larger width
-        gluOrtho2D(-1.0 * aspect, 1.0 * aspect, -1.0, 1.0);
+        // aspect >= clippingPlaneSize, set the height from -clippingPlaneSize to clippingPlaneSize, with larger width
+        gluOrtho2D(-clippingPlaneSize * aspect, clippingPlaneSize * aspect, -clippingPlaneSize, clippingPlaneSize);
     } else {
-        // aspect < 1, set the width to -1 to 1, with larger height
-        gluOrtho2D(-1.0, 1.0, -1.0 / aspect, 1.0 / aspect);
+        // aspect < clippingPlaneSize, set the width to -clippingPlaneSize to clippingPlaneSize, with larger height
+        gluOrtho2D(-clippingPlaneSize, clippingPlaneSize, -clippingPlaneSize / aspect, clippingPlaneSize / aspect);
     }
 }
 
@@ -83,7 +88,7 @@ void Setup(int argc, char** argv, void (*loop)(void))
     glutCreateWindow("Traffic simulator");  // Create window with the given title
     glutDisplayFunc( loop);       // Register callback handler for window re-paint event
     glutReshapeFunc(reshape);       // Register callback handler for window re-size event
-    glutTimerFunc(3000, Timer, 0);     // First timer call immediately
+    glutTimerFunc(500, Timer, 0);     // First timer call after 500 ms
 
     initGL();                       // Our own OpenGL initialization
 }
@@ -101,13 +106,13 @@ void Render::Update() {
 
 
 void Render::OnUpdate(Entity e) {
-    auto pos = world.GetComponent<Position>(e.GetId());
-    RenderSquare(pos.X, pos.Y, 0);
+    auto pos = world.GetComponent<Transform>(e.GetId());
+    RenderRectangle(pos.X, pos.Y, pos.Orientation);
 }
 
 Render::Render(World &world, void (*loop)(void)) : System(world) {
     sy = this;
-    this->SetRequiredComponents<Position>();
+    this->SetRequiredComponents<Transform>();
     Setup(0, nullptr, loop);
 }
 

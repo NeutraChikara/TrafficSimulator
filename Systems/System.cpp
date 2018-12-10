@@ -4,7 +4,6 @@
 #include "System.h"
 
 void System::Update() {
-    std::cout << "System::Update()" << std::endl;
     std::for_each(world.entities.begin(), world.entities.end(),[this](Entity e){
         if(HasRequiredComponents(e))
             OnUpdate(e);});
