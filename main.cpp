@@ -25,14 +25,14 @@ Logger logger(world);
 Move move(world);
 Render render(world, Loop);
 
-void CreateCar(int x, int y, int velX, int velY) {
+void CreateCarEntity(int x, int y, int velX, int velY) {
     auto entity = world.CreateEntity();
-    world.AddComponent(Velocity(10, 0), entity);
-    world.AddComponent(Transform(0, 0, 0), entity);
+    world.AddComponent(Velocity(velX, velY), entity);
+    world.AddComponent(Transform(x, y, 0), entity);
 }
 
 int main() {
-    CreateCar(0, 0, 1, 0);
+    CreateCarEntity(0, 0, 1, 0);
     render.Start();
 }
 
