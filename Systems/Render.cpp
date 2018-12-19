@@ -2,15 +2,11 @@
 // Created by Henrik Nielsen on 19/11/2018.
 //
 
-
- //Disable for Windows development, works on linux when GLUT is installed
-
 #include "Render.h"
 #include <GLUT/glut.h>  // GLUT, include glu.h and gl.h
 
- // GLUT runs as a console application starting at main()
+// GLUT runs as a console application starting at main()
 void RenderRectangle(GLfloat, GLfloat, GLfloat);
-Render *sy;
 
 // Initialize OpenGL Graphics
 void initGL() {
@@ -37,21 +33,24 @@ void display() {
     // Change the rotational angle after each display()
 }
 
-void RenderRectangle(GLfloat x, GLfloat y, GLfloat directionInDegrees)
-{
+void RenderRectangle(GLfloat x, GLfloat y, GLfloat directionInDegrees) {
     glPushMatrix();
-    glTranslatef(x/10000, y/10000, 0);
+    glTranslatef(x / 10000, y / 10000, 0);
     glRotatef(directionInDegrees, 0.0f, 0.0f, 1.0f);
     glBegin(GL_QUADS);
     glColor3f(0.7f, 0.7f, 0.7f);
     auto size = 0.005f;
     auto length = 0.004f;
-    glVertex2f(-size-length, -size);
-    glVertex2f( size+length, -size);
-    glVertex2f( size+length,  size);
-    glVertex2f(-size-length,  size);
+    glVertex2f(-size - length, -size);
+    glVertex2f(size + length, -size);
+    glVertex2f(size + length, size);
+    glVertex2f(-size - length, size);
     glEnd();
     glPopMatrix();
+}
+
+void RenderRoad() {
+
 }
 
 // Handler for window re-size event. Called back when the window first appears and
@@ -59,7 +58,7 @@ void RenderRectangle(GLfloat x, GLfloat y, GLfloat directionInDegrees)
 void reshape(GLsizei width, GLsizei height) {  // GLsizei for non-negative integer
     // Compute aspect ratio of the new window
     if (height == 0) height = 1;                // To prevent divide by 0
-    GLfloat aspect = (GLfloat)width / (GLfloat)height;
+    GLfloat aspect = (GLfloat) width / (GLfloat) height;
 
     // Set the viewport to cover the new window
     glViewport(0, 0, width, height);
@@ -79,44 +78,53 @@ void reshape(GLsizei width, GLsizei height) {  // GLsizei for non-negative integ
     }
 }
 
-void Setup(int argc, char** argv, void (*loop)(void))
-{
+void Setup(int argc, char **argv, void (*loop)()) {
     glutInit(&argc, argv);          // Initialize GLUT
     glutInitDisplayMode(GLUT_DOUBLE);  // Enable double buffered mode
     glutInitWindowSize(640, 480);   // Set the window's initial width & height - non-square
     glutInitWindowPosition(50, 50); // Position the window's initial top-left corner
     glutCreateWindow("Traffic simulator");  // Create window with the given title
-    glutDisplayFunc( loop);       // Register callback handler for window re-paint event
+    glutDisplayFunc(loop);       // Register callback handler for window re-paint event
     glutReshapeFunc(reshape);       // Register callback handler for window re-size event
     glutTimerFunc(500, Timer, 0);     // First timer call after 500 ms
 
     initGL();                       // Our own OpenGL initialization
 }
 
-void Render::Update() {
+namespace Ecs::Systems {
+    Render::Render(World &world, void (*loop)()) : System(world) {
+        SetRequiredComponents<Transform, Ecs::Components::Render>();
+        Setup(0, nullptr, loop);
+    }
 
-    glClear(GL_COLOR_BUFFER_BIT);   // Clear the color buffer
-    glMatrixMode(GL_MODELVIEW);     // To operate on Model-View matrix
+    void Render::Update() {
+        glClear(GL_COLOR_BUFFER_BIT);   // Clear the color buffer
+        glMatrixMode(GL_MODELVIEW);     // To operate on Model-View matrix
 
-    System::Update();
+        System::Update();
 
-    glutSwapBuffers();   // Double buffered - swap the front and back buffers
+        glutSwapBuffers();   // Double buffered - swap the front and back buffers
+    }
+
+
+    void Render::OnUpdate(Entity e) {
+
+        auto r = world.GetComponent<Ecs::Components::Render>(e.GetId());
+
+        if(r.Type == "car")
+        {
+            auto transform = world.GetComponent<Transform>(e.GetId());
+            RenderRectangle(transform.X, transform.Y, transform.Orientation);
+        }
+        else if(r.Type == "road")
+        {
+
+        }
+
+    }
+
+    void Render::Start() {
+        glutMainLoop();                 // Enter the infinite event-processing loop
+    }
 
 }
-
-
-void Render::OnUpdate(Entity e) {
-    auto pos = world.GetComponent<Transform>(e.GetId());
-    RenderRectangle(pos.X, pos.Y, pos.Orientation);
-}
-
-Render::Render(World &world, void (*loop)(void)) : System(world) {
-    sy = this;
-    this->SetRequiredComponents<Transform>();
-    Setup(0, nullptr, loop);
-}
-
-void Render::Start() {
-    glutMainLoop();                 // Enter the infinite event-processing loop
-}
-

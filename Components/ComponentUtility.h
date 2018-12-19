@@ -5,6 +5,7 @@
 #ifndef TRAFFICSIMULATOR_COMPONENTUTILITY_H
 #define TRAFFICSIMULATOR_COMPONENTUTILITY_H
 
+namespace Ecs::Components {
 
 struct ComponentUtilityHelper
 {
@@ -26,5 +27,6 @@ struct ComponentUtility : ComponentUtilityHelper
     }
 };
 
+}
 
 #endif //TRAFFICSIMULATOR_COMPONENTUTILITY_H

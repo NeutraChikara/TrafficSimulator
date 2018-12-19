@@ -5,11 +5,12 @@
 #ifndef TRAFFICSIMULATOR_ENTITY_H
 #define TRAFFICSIMULATOR_ENTITY_H
 
-
+namespace Ecs::Entities {
 
 class Entity {
 public:
-    using Id = int ;
+    // TODO: Genovervej brugen af using Id
+    using Id = int;
 
     Entity(Id id);
 
@@ -18,6 +19,6 @@ public:
 private:
     Id id;
 };
-
+}
 
 #endif //TRAFFICSIMULATOR_ENTITY_H

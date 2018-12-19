@@ -1,9 +1,7 @@
 //
-// Created by Henrik Nielsen on 03/12/2018.
+// Created by Henrik Nielsen on 19/12/2018.
 //
 
 #include "Transform.h"
 
-Transform::Transform(int x, int y, int orientation) : X(x), Y(x), Orientation(orientation) {
-
-}
+Ecs::Components::Transform::Transform(int x, int y, int orientation) : X(x), Y(x), Orientation(orientation) {}

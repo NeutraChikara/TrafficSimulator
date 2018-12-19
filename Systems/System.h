@@ -12,35 +12,42 @@
 #include <algorithm>
 #include <iostream>
 
-class System {
-public:
-    template<typename Component, typename... Components>
-    constexpr void SetRequiredComponents();
-    World & world;
-    System(World & world);
+using namespace Ecs::Managers;
 
-    virtual void Update();
+namespace Ecs::Systems {
 
-protected:
-    virtual void OnUpdate(Entity e) = 0;
+    class System {
+    public:
+        template<typename Component, typename... Components>
+        constexpr void SetRequiredComponents();
 
-private:
-    unsigned int RequiredComponentsMask =0;
+        World &world;
 
-    bool HasRequiredComponents(Entity entity);
-};
+        System(World &world);
 
-template<typename ReqComponent, typename... ReqComponents>
-constexpr void System::SetRequiredComponents() {
-    static_assert(std::is_base_of<Component, ReqComponent>::value, "Passed type must be a subclass of Component");
+        virtual void Update();
 
-    RequiredComponentsMask |= 1 <<ComponentUtility<ReqComponent>::GetId();
+    protected:
+        virtual void OnUpdate(Entity e) = 0;
 
-    if constexpr(sizeof...(ReqComponents) > 0)
-        SetRequiredComponents<ReqComponents...>();
+    private:
+        unsigned int RequiredComponentsMask = 0;
 
+        bool HasRequiredComponents(Entity entity);
+    };
+
+// TODO: Tjek om constexpr gør noget
+    template<typename ReqComponent, typename... ReqComponents>
+    constexpr void System::SetRequiredComponents() {
+        static_assert(std::is_base_of<Ecs::Components::Component, ReqComponent>::value,
+                      "Passed type must be a subclass of Component");
+
+        RequiredComponentsMask |= 1 << Ecs::Components::ComponentUtility<ReqComponent>::GetId();
+
+        if constexpr(sizeof...(ReqComponents) > 0)
+            SetRequiredComponents<ReqComponents...>();
+    }
 }
-
 
 #endif //TRAFFICSIMULATOR_SYSTEM_H
 

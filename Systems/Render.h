@@ -7,15 +7,16 @@
 
 #include "System.h"
 
-
+namespace Ecs::Systems {
 
 class Render : public System {
 public:
-    Render(World &world, void(* loop)(void));
-    void OnUpdate(Entity e);
-    void Update();
+    Render(World &world, void(* loop)());
+    void OnUpdate(Entity e) override;
+    void Update() override;
     void Start();
 };
 
+}
 
 #endif //TRAFFICSIMULATOR_RENDER_H

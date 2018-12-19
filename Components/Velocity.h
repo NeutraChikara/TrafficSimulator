@@ -8,12 +8,13 @@
 
 #include "Component.h"
 
-struct Velocity : Component {
-    Velocity(int dx = 0, int dy = 0);
+namespace Ecs::Components {
+    struct Velocity : Component {
+        Velocity(int dx = 0, int dy = 0);
 
-    int Dx;
-    int Dy;
-};
-
+        int Dx; // TODO: lav til doubles
+        int Dy;
+    };
+}
 
 #endif //TRAFFICSIMULATOR_VELOCITY_H

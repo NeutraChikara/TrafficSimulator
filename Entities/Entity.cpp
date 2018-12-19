@@ -4,11 +4,12 @@
 
 #include "Entity.h"
 
-
+namespace Ecs::Entities {
 Entity::Id Entity::GetId() {
     return id;
 }
 
 Entity::Entity(Entity::Id id):id(id){
 
+}
 }

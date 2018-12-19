@@ -6,46 +6,59 @@
 #define TRAFFICSIMULATOR_WORLD_H
 
 #include "../Entities/Entity.h"
-#include "../Components/NameComponent.h"
-#include "../Components/TestComponent2.h"
 #include "../Components/ComponentUtility.h"
 #include "../Components/Velocity.h"
 #include "../Components/Transform.h"
+#include "../Components/Path.h"
+#include "../Components/TrafficLight.h"
+#include "../Components/Render.h"
 #include <tuple>
 #include <vector>
 
-typedef std::tuple<NameComponent,TestComponent2, Velocity, Transform> Components;
-class World {
-public:
-    World();
+using namespace Ecs::Components;
+using namespace Ecs::Entities;
 
-    static const uint8_t EntityCount =100;
-    Entity CreateEntity();
-    template<typename T>
-    void AddComponent(T component,Entity entity );
-    template<typename T>
-    T& GetComponent(Entity::Id id );
-    uint32_t Getmask(Entity::Id id);
-    void DestroyEntity(Entity e);
-    std::vector<Entity> entities;
-private:
-    void Addmask(Entity::Id id,int ComponentId );
-    Components components[EntityCount];
-    uint32_t mask[EntityCount]{0};
-};
+namespace Ecs::Managers {
+    typedef std::tuple<Velocity, Transform, Ecs::Components::Path, TrafficLight, Ecs::Components::Render> Components;
 
-template<typename T>
-void World::AddComponent(T component, Entity  entity ) {
-    std::get<T>(components[entity.GetId()]) = component;
-    Addmask(entity.GetId(),ComponentUtility<T>::GetId());
-}
+    class World {
+    public:
+        static const uint8_t EntityCount = 100;
+
+        Entity CreateEntity();
+
+        template<typename T>
+        void AddComponent(T component, Entity entity);
+
+        template<typename T>
+        T &GetComponent(Entity::Id id);
+
+        uint32_t Getmask(Entity::Id id);
+
+        void DestroyEntity(Entity e);
+
+        std::vector<Entity> entities;
+
+        void kill(Entity e);
+
+    private:
+        void Addmask(Entity::Id id, int ComponentId);
+
+        Components components[EntityCount];
+        uint32_t mask[EntityCount]{0};
+    };
+
+    template<typename T>
+    void World::AddComponent(T component, Entity entity) {
+        std::get<T>(components[entity.GetId()]) = component;
+        Addmask(entity.GetId(), Ecs::Components::ComponentUtility<T>::GetId());
+    }
 
 //TODO: Should return a copy and have set/update component method
-template<typename T>
-T &World::GetComponent(Entity::Id id) {
-    return std::get<T>(components[id]);
+    template<typename T>
+    T &World::GetComponent(Entity::Id id) {
+        return std::get<T>(components[id]);
+    }
 }
-
-
 
 #endif //TRAFFICSIMULATOR_WORLD_H

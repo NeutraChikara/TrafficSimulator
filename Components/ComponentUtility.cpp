@@ -4,4 +4,4 @@
 
 #include "ComponentUtility.h"
 
-ComponentUtilityHelper::Id ComponentUtilityHelper::id_counter = 0;
+Ecs::Components::ComponentUtilityHelper::Id Ecs::Components::ComponentUtilityHelper::id_counter = 0;

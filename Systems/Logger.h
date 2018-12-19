@@ -4,24 +4,16 @@
 #ifndef TRAFFICSIMULATOR_LOGGER_H
 #define TRAFFICSIMULATOR_LOGGER_H
 
-#include <iostream>
 #include "System.h"
-#include "../Components/NameComponent.h"
 #include "../Entities/Entity.h"
-#include "../Components/Transform.h"
 
-class Logger : public System {
-public:
-    Logger(World & world):System(world){
-        this->SetRequiredComponents<Transform>();
-    }
+namespace Ecs::Systems {
 
-    void OnUpdate(Entity e){
-        std::cout << "Id: " << e.GetId() << " " << "x: " <<  world.GetComponent<Transform>(e.GetId()).X << std::endl;
-        std::cout << "Id: " << e.GetId() << " " << "y: " <<  world.GetComponent<Transform>(e.GetId()).Y << std::endl;
-    }
-
-};
-
+    class Logger : public System {
+    public:
+        Logger(World &world);
+        void OnUpdate(Entity e);
+    };
+}
 
 #endif

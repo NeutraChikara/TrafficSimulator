@@ -7,12 +7,16 @@
 
 
 #include "System.h"
+namespace Ecs::Systems {
+    class Move : public Ecs::Systems::System {
+    public:
+        Move(World &world);
 
-class Move : public System {
-public:
-    Move(World& world);
-    void OnUpdate(Entity e) ;
-};
+        void OnUpdate(Entity e);
 
+    private:
+        bool LightIsGo(Ecs::DataStructures::Node trafficLight);
+    };
+}
 
 #endif //TRAFFICSIMULATOR_MOVE_H

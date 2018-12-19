@@ -8,12 +8,15 @@
 
 #include "Component.h"
 
-struct Transform : Component {
-    Transform(int x = 0, int y = 0, int orientation = 0);
-    int Orientation;
-    int X;
-    int Y;
-};
+namespace Ecs::Components {
+    struct Transform : Component {
+        Transform(int x = 0, int y = 0, int orientation = 0);
+
+        int Orientation; // TODO: lav til doubles
+        int X;
+        int Y;
+    };
+}
 
 
 #endif //TRAFFICSIMULATOR_POSITION_H
