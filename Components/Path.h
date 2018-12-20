@@ -14,7 +14,6 @@ namespace Ecs::Components {
     struct Path : Component {
         std::vector<Ecs::DataStructures::Node> Path;
         unsigned int indexOfCurrentPoint;
-
     };
 
 }

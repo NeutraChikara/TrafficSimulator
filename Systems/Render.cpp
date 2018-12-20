@@ -111,14 +111,16 @@ namespace Ecs::Systems {
 
         auto r = world.GetComponent<Ecs::Components::Render>(e.GetId());
 
+        // TODO: enum instead of string
         if(r.Type == "car")
         {
             auto transform = world.GetComponent<Transform>(e.GetId());
             RenderRectangle(transform.X, transform.Y, transform.Orientation);
         }
-        else if(r.Type == "road")
+        else if(r.Type == "trafficLight")
         {
-
+            auto transform = world.GetComponent<Transform>(e.GetId());
+            RenderRectangle(transform.X, transform.Y, transform.Orientation);
         }
 
     }

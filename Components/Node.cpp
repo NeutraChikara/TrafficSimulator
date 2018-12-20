@@ -4,4 +4,6 @@
 
 #include "Node.h"
 
-    Ecs::DataStructures::Node::Node(int x, int y, int trafficLightId) : X(x), Y(y), trafficLightEntityId(trafficLightId), entrancePoint(0) {}
+Ecs::DataStructures::Node::Node(int trafficLightId) : trafficLightEntityId(trafficLightId),
+                                                        entrancePoint(0) {}
+

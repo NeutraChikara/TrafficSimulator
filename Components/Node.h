@@ -9,10 +9,9 @@ namespace Ecs::DataStructures {
 
 struct Node {
 public:
-    Node(int x,int y, int trafficLightId);
-    int X,Y;
+    Node(int trafficLightId);
     int trafficLightEntityId;
-    unsigned int entrancePoint;
+    unsigned int entrancePoint; // TODO: Check up on entrancePoint in Move system
 };
 }
 

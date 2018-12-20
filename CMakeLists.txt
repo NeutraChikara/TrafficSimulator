@@ -7,6 +7,7 @@ add_executable(TrafficSimulator main.cpp Systems/Render.cpp Systems/Render.h Sys
 
 find_package(OpenGL REQUIRED)
 find_package(GLUT REQUIRED) # Disable when GLUT is not installed, only need for OpenGL code
+find_package(Boost REQUIRED)
 include_directories( ${OPENGL_INCLUDE_DIRS}  ${GLUT_INCLUDE_DIRS} )
 
 target_link_libraries(TrafficSimulator ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} )

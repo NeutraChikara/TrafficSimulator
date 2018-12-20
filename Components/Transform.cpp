@@ -4,4 +4,4 @@
 
 #include "Transform.h"
 
-Ecs::Components::Transform::Transform(int x, int y, int orientation) : X(x), Y(x), Orientation(orientation) {}
+Ecs::Components::Transform::Transform(int x, int y, int orientation) : X(x), Y(y), Orientation(orientation) {}
