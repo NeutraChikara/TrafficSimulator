@@ -10,10 +10,12 @@
 
 namespace Ecs::Components {
     struct Velocity : Component {
-        Velocity(int dx = 0, int dy = 0);
+        Velocity(unsigned int maxSpeed = 20, unsigned int speed = 0, unsigned int acceleration = 10, unsigned int deceleration = 10);
 
-        int Dx; // TODO: lav til doubles
-        int Dy;
+        int Speed; // TODO: lav til doubles
+        unsigned int MaxSpeed;
+        unsigned int Acceleration;
+        unsigned int Deceleration;
     };
 }
 

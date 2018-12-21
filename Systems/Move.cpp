@@ -31,8 +31,8 @@ namespace Ecs::Systems {
 
         double length = std::sqrt(vectorX * vectorX + vectorY * vectorY);
 
-        if ( length < 50 && !LightIsGo(point))
-            return;
+        //if (length < 50 && !LightIsGo(point))
+          //  return;
 
         if (length < 20) {
             path.indexOfCurrentPoint++;
@@ -50,12 +50,21 @@ namespace Ecs::Systems {
         }
 
         length = std::sqrt(vectorX * vectorX + vectorY * vectorY);
-        double speed = std::sqrt(vel.Dx * vel.Dx + vel.Dy * vel.Dy);
-        transform.X += (vectorX / length) * speed;
-        transform.Y += (vectorY / length) * speed;
+        transform.X += (vectorX / length) * vel.Speed;
+        transform.Y += (vectorY / length) * vel.Speed;
 
-        if(vectorX != 0)
-            transform.Orientation = std::atan(vectorY/vectorX) * 180 / boost::math::constants::pi<double>();
+        if (vectorX != 0)
+        {
+            auto result = std::atan((double)vectorY / vectorX) * 180 / boost::math::constants::pi<double>();
+            transform.Orientation = result;
+        }
+        else if(vectorY < 0)
+        {
+            transform.Orientation = -90;
+        }
+        else {
+            transform.Orientation = 90;
+        }
     }
 
     bool Move::LightIsGo(Ecs::DataStructures::Node trafficLight) {

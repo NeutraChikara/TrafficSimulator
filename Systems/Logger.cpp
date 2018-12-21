@@ -12,7 +12,6 @@ namespace Ecs::Systems {
     }
 
     void Logger::OnUpdate(Entity e) {
-        std::cout << "Id: " << e.GetId() << " " << "x: " << world.GetComponent<Transform>(e.GetId()).X << std::endl;
-        std::cout << "Id: " << e.GetId() << " " << "y: " << world.GetComponent<Transform>(e.GetId()).Y << std::endl;
+        std::cout << "Id: " << e.GetId() << " " << "x: " << world.GetComponent<Transform>(e.GetId()).X <<" " << "y: " << world.GetComponent<Transform>(e.GetId()).Y << std::endl;
     }
 }

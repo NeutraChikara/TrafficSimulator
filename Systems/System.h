@@ -29,11 +29,9 @@ namespace Ecs::Systems {
 
     protected:
         virtual void OnUpdate(Entity e) = 0;
-
+        bool HasRequiredComponents(Entity entity);
     private:
         unsigned int RequiredComponentsMask = 0;
-
-        bool HasRequiredComponents(Entity entity);
     };
 
 // TODO: Tjek om constexpr gør noget

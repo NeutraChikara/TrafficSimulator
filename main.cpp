@@ -3,10 +3,11 @@
 #include <cstdint>
 
 /*
- * Containers algorithms and iterators ->std::for_each( use functor TODO
+ * Containers algorithms and iterators ->std::for_each( TODO: use functor
  * c++11 -> lambda
  * Metaprogramming check of types in SetRequiredComponents
- * Throw Render exception hvis component mangler TODO
+ * TODO: Throw Render exception hvis component mangler
+ * TODO: Change CreateCarEntity to use speed instead of velocty
  * Namespaces
  */
 
@@ -24,6 +25,8 @@
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/graph_traits.hpp>
 #include <boost/graph/dijkstra_shortest_paths.hpp>
+#include "Help/Visitors.h"
+#include "Systems/VehicleCollisionPrevention.h"
 
 using namespace Ecs::Components;
 using namespace Ecs::Systems;
@@ -44,10 +47,12 @@ Logger logger(world);
 Move move(world);
 Ecs::Systems::Render render(world, Loop);
 TrafficLightControl trafficLight(world);
+VehicleCollisionPrevention vcp(world);
 
-void CreateCarEntity(int x, int y, int velX, int velY, Path path) {
+// TODO: Move path to first parameter
+void CreateCarEntity(int x, int y, int vel, Path path) {
     auto entity = world.CreateEntity();
-    world.AddComponent(Velocity(velX, velY), entity);
+    world.AddComponent(Velocity(vel), entity);
     world.AddComponent(Transform(x, y, 0), entity);
     world.AddComponent(std::move(path), entity);
     world.AddComponent(Ecs::Components::Render("car"), entity);
@@ -62,7 +67,6 @@ int CreateTrafficLightEntity(int x, int y) {
 }
 
 int main() {
-
     auto A = CreateTrafficLightEntity(-5000, 5000);
     auto B = CreateTrafficLightEntity(-5000, -5000);
     auto C = CreateTrafficLightEntity(0, 5000);
@@ -78,10 +82,12 @@ int main() {
     edges.emplace_back(D, F);
     edges.emplace_back(E, F);
     auto g = CreateGraph(edges);
-    auto path = GetPath(g, A, F);
+    //CreateCarEntity(-5500, 5000, 30, GetPath(g, A, F));
+    //CreateCarEntity(-6000, 5000, 45, GetPath(g, A, F));
+    CreateCarEntity(5300, -5200, 30, GetPath(g, F, C));
+    CreateCarEntity(5300, -5800, 45, GetPath(g, F, C));
 
 
-    CreateCarEntity(-5500, 5000, 30, 0, path);
     render.Start();
 }
 
@@ -98,11 +104,23 @@ int GetWeight(Edge edge) {
 Path GetPath(Graph g, int startpointId, int endpointId) {
     // vector for storing distance property
     std::vector<int> d(num_vertices(g));
-
+    std::vector<Vertex> p(num_vertices(g), boost::graph_traits<Graph>::null_vertex()); //the predecessor array
     // get the first vertex
     Vertex s = *(vertices(g).first);
     // invoke variant 2 of Dijkstra's algorithm
-    dijkstra_shortest_paths(g, s, boost::distance_map(&d[0]));
+    dijkstra_shortest_paths(g, endpointId, boost::distance_map(&d[0]).visitor(Visitors(&p[0])));
+
+
+    std::cout << "parents in the tree of shortest paths:" << std::endl;
+    for(auto vi = vertices(g).first; vi != vertices(g).second; ++vi) {
+        std::cout << "parent(" << *vi;
+        if (p[*vi] == boost::graph_traits<Graph>::null_vertex())
+            std::cout << ") = no parent" << std::endl;
+        else
+            std::cout << ") = " << p[*vi] << std::endl;
+    }
+
+
 
     std::cout << "distances from start vertex:" << std::endl;
     boost::graph_traits<Graph>::vertex_iterator vi;
@@ -111,9 +129,12 @@ Path GetPath(Graph g, int startpointId, int endpointId) {
     std::cout << std::endl;
 
     Path path;
-    path.Path.emplace_back(0);
-    path.Path.emplace_back(4);
-    path.Path.emplace_back(1);
+
+    for (int i = startpointId; i != endpointId  ; i = p[i]) {
+        path.Path.emplace_back(i);
+    }
+    path.Path.emplace_back(endpointId);
+
 
     return path;
 }
@@ -135,5 +156,6 @@ void Loop() {
     logger.Update();
     trafficLight.Update();
     move.Update();
+    vcp.Update();
     render.Update();
 }
