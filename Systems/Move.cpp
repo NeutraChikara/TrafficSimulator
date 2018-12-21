@@ -21,7 +21,7 @@ namespace Ecs::Systems {
         auto vel = world.GetComponent<Velocity>(e.GetId());
         auto &path = world.GetComponent<Path>(e.GetId());
 
-        auto point = path.Path[path.indexOfCurrentPoint];
+        auto point = path.Nodes[path.IndexOfCurrentPoint];
 
         auto pointX = world.GetComponent<Transform>(point.trafficLightEntityId).X;
         auto pointY = world.GetComponent<Transform>(point.trafficLightEntityId).Y;
@@ -35,12 +35,12 @@ namespace Ecs::Systems {
           //  return;
 
         if (length < 20) {
-            path.indexOfCurrentPoint++;
-            if (path.indexOfCurrentPoint == path.Path.size()) {
+            path.IndexOfCurrentPoint++;
+            if (path.IndexOfCurrentPoint == path.Nodes.size()) {
                 world.kill(e);
                 return;
             }
-            point = path.Path[path.indexOfCurrentPoint];
+            point = path.Nodes[path.IndexOfCurrentPoint];
 
             pointX = world.GetComponent<Transform>(point.trafficLightEntityId).X;
             pointY = world.GetComponent<Transform>(point.trafficLightEntityId).Y;

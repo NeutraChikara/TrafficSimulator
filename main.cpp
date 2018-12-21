@@ -131,9 +131,9 @@ Path GetPath(Graph g, int startpointId, int endpointId) {
     Path path;
 
     for (int i = startpointId; i != endpointId  ; i = p[i]) {
-        path.Path.emplace_back(i);
+        path.Nodes.emplace_back(i);
     }
-    path.Path.emplace_back(endpointId);
+    path.Nodes.emplace_back(endpointId);
 
 
     return path;

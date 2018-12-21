@@ -3,7 +3,7 @@
 //
 
 #include "Render.h"
-#include <GLUT/glut.h>  // GLUT, include glu.h and gl.h
+#include <GL/glut.h>  // GLUT, include glu.h and gl.h
 
 // GLUT runs as a console application starting at main()
 void RenderRectangle(GLfloat, GLfloat, GLfloat);
