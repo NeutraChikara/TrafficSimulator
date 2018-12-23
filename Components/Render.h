@@ -7,13 +7,17 @@
 
 
 #include "Component.h"
+#include "../Helpers/Color.h"
 #include <string>
+
+using namespace Ecs::Helpers;
 
 namespace Ecs::Components {
     struct Render : Component {
-        Render(std::string type = "unknown", std::string color = "grey") : Type(std::move(type)), Color(std::move(color)) {}
+        Render(std::string type = "unknown", Color color = {0.5, 0.5, 0.5});
+
         std::string Type;
-        std::string Color;
+        struct Color Color;
     };
 }
 

@@ -7,7 +7,7 @@
 
 #include "../Entities/Entity.h"
 #include "../Components/ComponentUtility.h"
-#include "../Components/Velocity.h"
+#include "../Components/SpeedAndAcceleration.h"
 #include "../Components/Transform.h"
 #include "../Components/Path.h"
 #include "../Components/TrafficLight.h"
@@ -19,7 +19,7 @@ using namespace Ecs::Components;
 using namespace Ecs::Entities;
 
 namespace Ecs::Managers {
-    typedef std::tuple<Velocity, Transform, Ecs::Components::Path, TrafficLight, Ecs::Components::Render> Components;
+    typedef std::tuple<SpeedAndAcceleration, Transform, Ecs::Components::Path, TrafficLight, Ecs::Components::Render> Components;
 
     class World {
     public:
@@ -34,8 +34,6 @@ namespace Ecs::Managers {
         T &GetComponent(Entity::Id id);
 
         uint32_t Getmask(Entity::Id id);
-
-        void DestroyEntity(Entity e);
 
         std::vector<Entity> entities;
 

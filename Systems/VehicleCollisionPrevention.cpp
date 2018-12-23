@@ -7,13 +7,13 @@
 #include <cmath>
 
 Ecs::Systems::VehicleCollisionPrevention::VehicleCollisionPrevention(World &world) : System(world) {
-    SetRequiredComponents<Transform, Velocity>();
+    SetRequiredComponents<Transform, SpeedAndAcceleration>();
 }
 
 void Ecs::Systems::VehicleCollisionPrevention::OnUpdate(Entity e) {
     auto transform = world.GetComponent<Transform>(e.GetId());
-    auto &velocity = world.GetComponent<Velocity>(e.GetId());
-    bool inTraffic;
+    auto &velocity = world.GetComponent<SpeedAndAcceleration>(e.GetId());
+    bool inTraffic = false;
     std::for_each(world.entities.begin(), world.entities.end(),
                   [&](Entity other) {
                       if (HasRequiredComponents(other) && other.GetId() != e.GetId()) {
@@ -26,7 +26,6 @@ void Ecs::Systems::VehicleCollisionPrevention::OnUpdate(Entity e) {
                               if (velocity.Speed < 0) velocity.Speed = 0;
                               std::cout << e.GetId();
                           }
-
                       }
                   });
 
@@ -52,29 +51,29 @@ bool Ecs::Systems::VehicleCollisionPrevention::SameDirection(Transform transform
 }
 
 bool Ecs::Systems::VehicleCollisionPrevention::LastVehicle(Transform transform, Transform otherTransform) {
-    int vectorX = transform.X - otherTransform.X ;
-    int vectorY = transform.Y - otherTransform.Y ;
+    int vectorX = transform.X - otherTransform.X;
+    int vectorY = transform.Y - otherTransform.Y;
 
-    double angle = Angle(vectorX,vectorY);
+    double angle = Angle(vectorX, vectorY);
 
     auto deltaAngle = angle - transform.Orientation;
 
     int fov = 40;
-    auto result = std::abs( deltaAngle) < fov ;
+    auto result = std::abs(deltaAngle) < fov;
 
     return result;
 }
 
 double Ecs::Systems::VehicleCollisionPrevention::Angle(int x, int y) {
 
-    if(x == 0)
-        return (y> 0? 90 : -90 );
+    if (x == 0)
+        return (y > 0 ? 90 : -90);
 
-    int i =0;
+    int i = 0;
 
-    if(y <0)
-       i =180;
-    return std::atan((double) y / x) * 180 / boost::math::constants::pi<double>()+i;
+    if (y < 0)
+        i = 180;
+    return std::atan((double) y / x) * 180 / boost::math::constants::pi<double>() + i;
 }
 
 

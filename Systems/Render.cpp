@@ -6,7 +6,7 @@
 #include <GL/glut.h>  // GLUT, include glu.h and gl.h
 
 // GLUT runs as a console application starting at main()
-void RenderRectangle(GLfloat, GLfloat, GLfloat);
+void RenderRectangle(GLfloat x, GLfloat y, GLfloat directionInDegrees, Color color);
 
 // Initialize OpenGL Graphics
 void initGL() {
@@ -33,12 +33,12 @@ void display() {
     // Change the rotational angle after each display()
 }
 
-void RenderRectangle(GLfloat x, GLfloat y, GLfloat directionInDegrees) {
+void RenderRectangle(GLfloat x, GLfloat y, GLfloat directionInDegrees, Color color) {
     glPushMatrix();
     glTranslatef(x / 10000, y / 10000, 0);
     glRotatef(directionInDegrees, 0.0f, 0.0f, 1.0f);
     glBegin(GL_QUADS);
-    glColor3f(0.7f, 0.7f, 0.7f);
+    glColor3f(color.R, color.G, color.B);
     auto size = 0.005f;
     auto length = 0.004f;
     glVertex2f(-size - length, -size);
@@ -115,12 +115,12 @@ namespace Ecs::Systems {
         if(r.Type == "car")
         {
             auto transform = world.GetComponent<Transform>(e.GetId());
-            RenderRectangle(transform.X, transform.Y, transform.Orientation);
+            RenderRectangle(transform.X, transform.Y, transform.Orientation, r.Color);
         }
         else if(r.Type == "trafficLight")
         {
             auto transform = world.GetComponent<Transform>(e.GetId());
-            RenderRectangle(transform.X, transform.Y, transform.Orientation);
+            RenderRectangle(transform.X, transform.Y, transform.Orientation, r.Color);
         }
 
     }

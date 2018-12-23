@@ -2,9 +2,9 @@
 // Created by Henrik Nielsen on 03/12/2018.
 //
 
-#include "Move.h"
+#include "Drive.h"
 #include "../Components/Transform.h"
-#include "../Components/Velocity.h"
+#include "../Components/SpeedAndAcceleration.h"
 #include "../Components/TrafficLight.h"
 #include <boost/math/constants/constants.hpp>
 #include <cmath>
@@ -12,13 +12,13 @@
 using namespace Ecs::Components;
 
 namespace Ecs::Systems {
-    Move::Move(World &world) : System(world) {
-        SetRequiredComponents<Transform, Velocity, Path>();
+    Drive::Drive(World &world) : System(world) {
+        SetRequiredComponents<Transform, SpeedAndAcceleration, Path>();
     }
 
-    void Move::OnUpdate(Entity e) {
+    void Drive::OnUpdate(Entity e) {
         auto &transform = world.GetComponent<Transform>(e.GetId());
-        auto vel = world.GetComponent<Velocity>(e.GetId());
+        auto vel = world.GetComponent<SpeedAndAcceleration>(e.GetId());
         auto &path = world.GetComponent<Path>(e.GetId());
 
         auto point = path.Nodes[path.IndexOfCurrentPoint];
@@ -67,7 +67,7 @@ namespace Ecs::Systems {
         }
     }
 
-    bool Move::LightIsGo(Ecs::DataStructures::Node trafficLight) {
+    bool Drive::LightIsGo(Ecs::DataStructures::Node trafficLight) {
         auto light = world.GetComponent<TrafficLight>(trafficLight.trafficLightEntityId);
         return light.IsDirectionAllowed[trafficLight.entrancePoint];
     }

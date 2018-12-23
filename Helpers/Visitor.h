@@ -7,12 +7,11 @@
 
 #include <boost/graph/dijkstra_shortest_paths.hpp>
 
+namespace Ecs::Helpers {
 template<typename PredecessorMap>
-class Visitors : public boost::dijkstra_visitor<> {
+class Visitor : public boost::dijkstra_visitor<> {
 public:
-
-
-    Visitors(PredecessorMap m_predecessor) : m_predecessor(m_predecessor) {
+    Visitor(PredecessorMap m_predecessor) : m_predecessor(m_predecessor) {
 
     }
 
@@ -24,6 +23,6 @@ public:
 protected:
     PredecessorMap m_predecessor;
 };
-
+}
 
 #endif //TRAFFICSIMULATOR_VISITORS_H

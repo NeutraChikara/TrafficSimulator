@@ -8,9 +8,9 @@
 
 #include "System.h"
 namespace Ecs::Systems {
-    class Move : public Ecs::Systems::System {
+    class Drive : public Ecs::Systems::System {
     public:
-        Move(World &world);
+        Drive(World &world);
 
         void OnUpdate(Entity e);
 

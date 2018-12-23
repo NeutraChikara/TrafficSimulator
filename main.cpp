@@ -14,8 +14,8 @@
 #include "Components/Render.h"
 #include "Managers/World.h"
 #include "Systems/Logger.h"
-#include "Systems/Move.h"
-#include "Components/Velocity.h"
+#include "Systems/Drive.h"
+#include "Components/SpeedAndAcceleration.h"
 #include "Systems/Render.h"
 #include "Components/Path.h"
 #include "Systems/TrafficLightControl.h"
@@ -25,12 +25,13 @@
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/graph_traits.hpp>
 #include <boost/graph/dijkstra_shortest_paths.hpp>
-#include "Help/Visitors.h"
+#include "Helpers/Visitor.h"
 #include "Systems/VehicleCollisionPrevention.h"
 
 using namespace Ecs::Components;
 using namespace Ecs::Systems;
 using namespace Ecs::DataStructures;
+using namespace Ecs:: Helpers;
 
 // writing out the edges in the graph
 typedef std::pair<int, int> Edge;
@@ -44,18 +45,18 @@ Path GetPath(Graph g, int startpointId, int endpointId);
 
 static World world;
 Logger logger(world);
-Move move(world);
+Drive move(world);
 Ecs::Systems::Render render(world, Loop);
 TrafficLightControl trafficLight(world);
 VehicleCollisionPrevention vcp(world);
 
 // TODO: Move path to first parameter
-void CreateCarEntity(int x, int y, int vel, Path path) {
+void CreateCarEntity(int x, int y, int speed, Path path, Color color) {
     auto entity = world.CreateEntity();
-    world.AddComponent(Velocity(vel), entity);
+    world.AddComponent(SpeedAndAcceleration(speed), entity);
     world.AddComponent(Transform(x, y, 0), entity);
     world.AddComponent(std::move(path), entity);
-    world.AddComponent(Ecs::Components::Render("car"), entity);
+    world.AddComponent(Ecs::Components::Render("car", color), entity);
 }
 
 int CreateTrafficLightEntity(int x, int y) {
@@ -84,8 +85,8 @@ int main() {
     auto g = CreateGraph(edges);
     //CreateCarEntity(-5500, 5000, 30, GetPath(g, A, F));
     //CreateCarEntity(-6000, 5000, 45, GetPath(g, A, F));
-    CreateCarEntity(5300, -5200, 30, GetPath(g, F, C));
-    CreateCarEntity(5300, -5800, 45, GetPath(g, F, C));
+    CreateCarEntity(5300, -5200, 30, GetPath(g, F, C), Color(1, 0 ,0));
+    CreateCarEntity(5300, -5800, 35, GetPath(g, F, C), Color(0, 1, 0));
 
 
     render.Start();
@@ -108,7 +109,7 @@ Path GetPath(Graph g, int startpointId, int endpointId) {
     // get the first vertex
     Vertex s = *(vertices(g).first);
     // invoke variant 2 of Dijkstra's algorithm
-    dijkstra_shortest_paths(g, endpointId, boost::distance_map(&d[0]).visitor(Visitors(&p[0])));
+    dijkstra_shortest_paths(g, endpointId, boost::distance_map(&d[0]).visitor(Visitor(&p[0])));
 
 
     std::cout << "parents in the tree of shortest paths:" << std::endl;
