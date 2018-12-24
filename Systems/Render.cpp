@@ -81,7 +81,7 @@ void reshape(GLsizei width, GLsizei height) {  // GLsizei for non-negative integ
 void Setup(int argc, char **argv, void (*loop)()) {
     glutInit(&argc, argv);          // Initialize GLUT
     glutInitDisplayMode(GLUT_DOUBLE);  // Enable double buffered mode
-    glutInitWindowSize(640, 480);   // Set the window's initial width & height - non-square
+    glutInitWindowSize(640*2, 480*2);   // Set the window's initial width & height - non-square
     glutInitWindowPosition(50, 50); // Position the window's initial top-left corner
     glutCreateWindow("Traffic simulator");  // Create window with the given title
     glutDisplayFunc(loop);       // Register callback handler for window re-paint event

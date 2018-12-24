@@ -51,50 +51,21 @@ bool Ecs::Systems::VehicleCollisionPrevention::SameDirection(Transform transform
 }
 
 bool Ecs::Systems::VehicleCollisionPrevention::LastVehicle(Transform transform, Transform otherTransform) {
-    int vectorX = transform.X - otherTransform.X;
-    int vectorY = transform.Y - otherTransform.Y;
+    auto pi = boost::math::constants::pi<double>();
 
-    double angle = Angle(vectorX, vectorY);
+    auto angleInRad = transform.Orientation * pi / 180; // TODO: Use literal
+    auto x1 = std::cos(angleInRad);
+    auto y1 = std::sin(angleInRad);
+    auto x2 = otherTransform.X - transform.X;
+    auto y2 = otherTransform.Y - transform.Y;
 
-    auto deltaAngle = angle - transform.Orientation;
+    auto dotProduct = x1 * x2 + y1 + y2;
+    auto determinant = x1*y2 - y1*x2;
 
-    int fov = 40;
-    auto result = std::abs(deltaAngle) < fov;
+    auto angle = std::atan2(determinant, dotProduct) * 180 / pi;
 
-    return result;
+    auto fov = 40;
+    auto withinFov = std::abs(angle) < fov;
+
+    return withinFov;
 }
-
-double Ecs::Systems::VehicleCollisionPrevention::Angle(int x, int y) {
-
-    if (x == 0)
-        return (y > 0 ? 90 : -90);
-
-    int i = 0;
-
-    if (y < 0)
-        i = 180;
-    return std::atan((double) y / x) * 180 / boost::math::constants::pi<double>() + i;
-}
-
-
-//void whatever()
-//{
-//    int deltaAngle = 0;
-//    if (vectorX == 0) {
-//        deltaAngle = (vectorY > 0 ? 90 : -90) - transform.Orientation;
-//    }
-//
-//    if (vectorX != 0) {
-//        if (vectorX < 0 && vectorY == 0)
-//            deltaAngle = -180;
-//        else {
-//
-//            auto transformDirection = transform.Orientation;
-//            deltaAngle = angleBetweenCars - transformDirection;
-//        }
-//    }
-//
-//    if (vectorX < 0 && vectorY > 0)
-//        deltaAngle -= 90;
-//
-//}

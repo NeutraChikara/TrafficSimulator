@@ -31,7 +31,7 @@
 using namespace Ecs::Components;
 using namespace Ecs::Systems;
 using namespace Ecs::DataStructures;
-using namespace Ecs:: Helpers;
+using namespace Ecs::Helpers;
 
 // writing out the edges in the graph
 typedef std::pair<int, int> Edge;
@@ -40,7 +40,9 @@ typedef boost::adjacency_list<boost::listS, boost::vecS, boost::undirectedS, boo
 typedef boost::graph_traits<Graph>::vertex_descriptor Vertex;
 
 void Loop();
-Graph CreateGraph(std::vector <Edge> &edges);
+
+Graph CreateGraph(std::vector<Edge> &edges);
+
 Path GetPath(Graph g, int startpointId, int endpointId);
 
 static World world;
@@ -75,7 +77,7 @@ int main() {
     auto E = CreateTrafficLightEntity(5000, 5000);
     auto F = CreateTrafficLightEntity(5000, -5000);
 
-    std::vector <Edge> edges;
+    std::vector<Edge> edges;
     edges.emplace_back(A, C);
     edges.emplace_back(D, B);
     edges.emplace_back(C, D);
@@ -83,10 +85,10 @@ int main() {
     edges.emplace_back(D, F);
     edges.emplace_back(E, F);
     auto g = CreateGraph(edges);
-    //CreateCarEntity(-5500, 5000, 30, GetPath(g, A, F));
-    //CreateCarEntity(-6000, 5000, 45, GetPath(g, A, F));
-    CreateCarEntity(5300, -5200, 30, GetPath(g, F, C), Color(1, 0 ,0));
-    CreateCarEntity(5300, -5800, 35, GetPath(g, F, C), Color(0, 1, 0));
+    CreateCarEntity(-5500, 5000, 30, GetPath(g, A, F), Color(0, 0, 1));
+    CreateCarEntity(-6000, 5000, 35, GetPath(g, A, F), Color(1, 1, 0));
+    //CreateCarEntity(5300, -5200, 30, GetPath(g, F, C), Color(1, 0 ,0));
+    //CreateCarEntity(5300, -5800, 35, GetPath(g, F, C), Color(0, 1, 0));
 
 
     render.Start();
@@ -113,14 +115,13 @@ Path GetPath(Graph g, int startpointId, int endpointId) {
 
 
     std::cout << "parents in the tree of shortest paths:" << std::endl;
-    for(auto vi = vertices(g).first; vi != vertices(g).second; ++vi) {
+    for (auto vi = vertices(g).first; vi != vertices(g).second; ++vi) {
         std::cout << "parent(" << *vi;
         if (p[*vi] == boost::graph_traits<Graph>::null_vertex())
             std::cout << ") = no parent" << std::endl;
         else
             std::cout << ") = " << p[*vi] << std::endl;
     }
-
 
 
     std::cout << "distances from start vertex:" << std::endl;
@@ -131,7 +132,7 @@ Path GetPath(Graph g, int startpointId, int endpointId) {
 
     Path path;
 
-    for (int i = startpointId; i != endpointId  ; i = p[i]) {
+    for (int i = startpointId; i != endpointId; i = p[i]) {
         path.Nodes.emplace_back(i);
     }
     path.Nodes.emplace_back(endpointId);
@@ -140,7 +141,7 @@ Path GetPath(Graph g, int startpointId, int endpointId) {
     return path;
 }
 
-Graph CreateGraph(std::vector <Edge> &edges) {
+Graph CreateGraph(std::vector<Edge> &edges) {
     // Make convenient labels for the vertices
     const int num_vertices = edges.size();
     int weights[num_vertices];

@@ -31,8 +31,8 @@ namespace Ecs::Systems {
 
         double length = std::sqrt(vectorX * vectorX + vectorY * vectorY);
 
-        //if (length < 50 && !LightIsGo(point))
-          //  return;
+        //if (length < 50 && !LightIsGo(point)) // TODO: Reeable to stop for red traffic light
+        //  return;
 
         if (length < 20) {
             path.IndexOfCurrentPoint++;
@@ -51,20 +51,21 @@ namespace Ecs::Systems {
 
         length = std::sqrt(vectorX * vectorX + vectorY * vectorY);
         transform.X += (vectorX / length) * vel.Speed;
-        transform.Y += (vectorY / length) * vel.Speed;
+        auto test1 = (vectorY / length);
+        auto test2 = test1 * vel.Speed;
+        transform.Y += test2;
 
-        if (vectorX != 0)
-        {
-            auto result = std::atan((double)vectorY / vectorX) * 180 / boost::math::constants::pi<double>();
-            transform.Orientation = result;
-        }
-        else if(vectorY < 0)
-        {
-            transform.Orientation = -90;
-        }
-        else {
-            transform.Orientation = 90;
-        }
+
+        auto x1 = vectorX;
+        auto y1 = vectorY;
+        auto x2 = 1;
+        auto y2 = 0;
+
+        auto dotProduct = x1 * x2 + y1 * y2;
+        auto determinant = x1 * y2 - y1 * x2;
+        auto angle = atan2(determinant, dotProduct) * 180 / boost::math::constants::pi<double>();
+
+        transform.Orientation = angle;
     }
 
     bool Drive::LightIsGo(Ecs::DataStructures::Node trafficLight) {
