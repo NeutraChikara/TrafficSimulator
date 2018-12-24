@@ -21,7 +21,7 @@ namespace Ecs::Systems {
 
         bool LastVehicle(Transform transform, Transform otherTransform);
 
-        double Angle(int x, int y);
+        double AngleBetweenTransforms(Transform current, Transform other);
     };
 }
 

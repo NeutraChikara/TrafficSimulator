@@ -19,8 +19,8 @@ void Ecs::Systems::VehicleCollisionPrevention::OnUpdate(Entity e) {
                       if (HasRequiredComponents(other) && other.GetId() != e.GetId()) {
                           auto otherTransform = world.GetComponent<Transform>(other.GetId());
                           if (!inTraffic && SameDirection(transform, otherTransform) &&
-                              LastVehicle(transform, otherTransform) &&
-                              DistanceBetween(transform, otherTransform) < 500) {
+                              DistanceBetween(transform, otherTransform) < 500 &&
+                              LastVehicle(transform, otherTransform)) {
                               inTraffic = true;
                               velocity.Speed -= velocity.Deceleration;
                               if (velocity.Speed < 0) velocity.Speed = 0;
@@ -51,21 +51,23 @@ bool Ecs::Systems::VehicleCollisionPrevention::SameDirection(Transform transform
 }
 
 bool Ecs::Systems::VehicleCollisionPrevention::LastVehicle(Transform transform, Transform otherTransform) {
-    auto pi = boost::math::constants::pi<double>();
-
-    auto angleInRad = transform.Orientation * pi / 180; // TODO: Use literal
-    auto x1 = std::cos(angleInRad);
-    auto y1 = std::sin(angleInRad);
-    auto x2 = otherTransform.X - transform.X;
-    auto y2 = otherTransform.Y - transform.Y;
-
-    auto dotProduct = x1 * x2 + y1 + y2;
-    auto determinant = x1*y2 - y1*x2;
-
-    auto angle = std::atan2(determinant, dotProduct) * 180 / pi;
-
+    auto angle = AngleBetweenTransforms(transform, otherTransform);
     auto fov = 40;
     auto withinFov = std::abs(angle) < fov;
 
     return withinFov;
+}
+
+double Ecs::Systems::VehicleCollisionPrevention::AngleBetweenTransforms(Transform current, Transform other) {
+    auto pi = boost::math::constants::pi<double>();
+    auto angleInRad = current.Orientation * pi / 180; // TODO: Use literal
+    auto x1 = std::cos(angleInRad);
+    auto y1 = std::sin(angleInRad);
+    auto x2 = other.X - current.X;
+    auto y2 = other.Y - current.Y;
+
+    auto dotProduct = x1 * x2 + y1 * y2;
+    auto determinant = y1 * x2 - x1 * y2;
+
+    return std::atan2(determinant, dotProduct) * 180 / pi;
 }
