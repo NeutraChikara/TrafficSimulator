@@ -2,15 +2,15 @@
 // Created by Henrik Nielsen on 15/12/2018.
 //
 
-#include "TrafficLightControl.h"
+#include "TrafficLight.h"
 #include "../Components/TrafficLight.h"
 namespace Ecs::Systems {
-    TrafficLightControl::TrafficLightControl(World &world) : System(world) {
-        SetRequiredComponents<TrafficLight>();
+    TrafficLight::TrafficLight(World &world) : System(world) {
+        SetRequiredComponents<Ecs::Components::TrafficLight>();
     }
 
-    void TrafficLightControl::OnUpdate(Entity e) {
-        auto &light = world.GetComponent<TrafficLight>(e.GetId());
+    void TrafficLight::OnUpdate(Entity e) {
+        auto &light = world.GetComponent<Ecs::Components::TrafficLight>(e.GetId());
         light.LastChangedCounter++;
         if (light.LastChangedCounter > 50) {
             light.LastChangedCounter = 0;

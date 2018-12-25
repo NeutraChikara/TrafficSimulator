@@ -12,14 +12,15 @@
 #include "../Components/Path.h"
 #include "../Components/TrafficLight.h"
 #include "../Components/Render.h"
+#include "../Components/RoadGraph.h"
 #include <tuple>
 #include <vector>
 
-using namespace Ecs::Components;
-using namespace Ecs::Entities;
-
 namespace Ecs::Managers {
-    typedef std::tuple<SpeedAndAcceleration, Transform, Ecs::Components::Path, TrafficLight, Ecs::Components::Render> Components;
+    using namespace Ecs::Components;
+    using namespace Ecs::Entities;
+
+    typedef std::tuple<SpeedAndAcceleration, Transform, Ecs::Components::Path, TrafficLight, Ecs::Components::Render, RoadGraph> Components;
 
     class World {
     public:

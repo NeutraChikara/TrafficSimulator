@@ -49,8 +49,57 @@ void RenderRectangle(GLfloat x, GLfloat y, GLfloat directionInDegrees, Color col
     glPopMatrix();
 }
 
-void RenderRoad() {
+void RenderRoad(Transform first, Transform second, Color color) {
 
+    auto x1 = (GLfloat) first.X / 10000;
+    auto y1 = (GLfloat) first.Y / 10000;
+    auto x2 = (GLfloat) second.X / 10000;
+    auto y2 = (GLfloat) second.Y / 10000;
+
+    if (x2 < x1 || y1 < y2) {
+        auto xTemp = x1;
+        x1 = x2;
+        x2 = xTemp;
+
+        auto yTemp = y1;
+        y1 = y2;
+        y2 = yTemp;
+    }
+
+    glPushMatrix();
+    glBegin(GL_QUADS);
+    glColor3f(color.R, color.G, color.B);
+
+    auto vectorX = x1 - x2;
+    auto vectorY = y1 - y2;
+    auto trackWidth = 0.045f;
+    auto lineWidth = 0.002f;
+    auto junctionPadding = trackWidth;
+
+    if (vectorY == 0) {
+        glVertex2f(x1 + junctionPadding, y1 + trackWidth);
+        glVertex2f(x2 - junctionPadding, y2 + trackWidth);
+        glVertex2f(x2 - junctionPadding, y2 + lineWidth + trackWidth);
+        glVertex2f(x1 + junctionPadding, y1 + lineWidth + trackWidth);
+
+        glVertex2f(x1 + junctionPadding, y1 - trackWidth);
+        glVertex2f(x2 - junctionPadding, y2 - trackWidth);
+        glVertex2f(x2 - junctionPadding, y2 - lineWidth - trackWidth);
+        glVertex2f(x1 + junctionPadding, y1 - lineWidth - trackWidth);
+    } else if (vectorX == 0) {
+        glVertex2f(x1 + trackWidth, y1 - junctionPadding);
+        glVertex2f(x2 + trackWidth, y2 + junctionPadding);
+        glVertex2f(x2 + trackWidth + lineWidth, y2 + junctionPadding);
+        glVertex2f(x1 + trackWidth + lineWidth, y1 - junctionPadding);
+
+        glVertex2f(x1 - trackWidth, y1 - junctionPadding);
+        glVertex2f(x2 - trackWidth, y2 + junctionPadding);
+        glVertex2f(x2 - trackWidth + lineWidth, y2 + junctionPadding);
+        glVertex2f(x1 - trackWidth + lineWidth, y1 - junctionPadding);
+    }
+
+    glEnd();
+    glPopMatrix();
 }
 
 // Handler for window re-size event. Called back when the window first appears and
@@ -81,9 +130,9 @@ void reshape(GLsizei width, GLsizei height) {  // GLsizei for non-negative integ
 void Setup(int argc, char **argv, void (*loop)()) {
     glutInit(&argc, argv);          // Initialize GLUT
     glutInitDisplayMode(GLUT_DOUBLE);  // Enable double buffered mode
-    glutInitWindowSize(640*2, 480*2);   // Set the window's initial width & height - non-square
+    glutInitWindowSize(640 * 2, 480 * 2);   // Set the window's initial width & height - non-square
     glutInitWindowPosition(50, 50); // Position the window's initial top-left corner
-    glutCreateWindow("Traffic simulator");  // Create window with the given title
+    glutCreateWindow("Traffic Simulator");  // Create window with the given title
     glutDisplayFunc(loop);       // Register callback handler for window re-paint event
     glutReshapeFunc(reshape);       // Register callback handler for window re-size event
     glutTimerFunc(500, Timer, 0);     // First timer call after 500 ms
@@ -112,21 +161,26 @@ namespace Ecs::Systems {
         auto r = world.GetComponent<Ecs::Components::Render>(e.GetId());
 
         // TODO: enum instead of string
-        if(r.Type == "car")
-        {
+        if (r.Type == "car") {
             auto transform = world.GetComponent<Transform>(e.GetId());
             RenderRectangle(transform.X, transform.Y, transform.Orientation, r.Color);
-        }
-        else if(r.Type == "trafficLight")
-        {
-            auto transform = world.GetComponent<Transform>(e.GetId());
-            RenderRectangle(transform.X, transform.Y, transform.Orientation, r.Color);
+        } else if (r.Type == "roadGraph") {
+            auto graph = world.GetComponent<RoadGraph>(e.GetId());
+            for (auto &edge : graph.Edges) {
+                auto trafficLightFirst = edge.first;
+                auto trafficLightSecond = edge.second;
+
+                auto firstTransform = world.GetComponent<Transform>(trafficLightFirst);
+                auto secondTransform = world.GetComponent<Transform>(trafficLightSecond);
+
+                RenderRoad(firstTransform, secondTransform, r.Color);
+            }
         }
 
     }
 
     void Render::Start() {
-        glutMainLoop();                 // Enter the infinite event-processing loop
+        glutMainLoop();     // Enter the infinite event-processing loop
     }
 
 }

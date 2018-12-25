@@ -11,6 +11,7 @@
  * Namespaces
  */
 
+#include <iostream>
 #include "Components/Render.h"
 #include "Managers/World.h"
 #include "Systems/Logger.h"
@@ -18,26 +19,18 @@
 #include "Components/SpeedAndAcceleration.h"
 #include "Systems/Render.h"
 #include "Components/Path.h"
-#include "Systems/TrafficLightControl.h"
+#include "Systems/TrafficLight.h"
 #include "Components/TrafficLight.h"
 #include "Components/Node.h"
-#include <iostream>
-#include <boost/graph/adjacency_list.hpp>
-#include <boost/graph/graph_traits.hpp>
-#include <boost/graph/dijkstra_shortest_paths.hpp>
 #include "Helpers/Visitor.h"
 #include "Systems/VehicleCollisionPrevention.h"
+#include "Components/RoadGraph.h"
 
 using namespace Ecs::Components;
 using namespace Ecs::Systems;
 using namespace Ecs::DataStructures;
 using namespace Ecs::Helpers;
 
-// writing out the edges in the graph
-typedef std::pair<int, int> Edge;
-// create a typedef for the Graph type
-typedef boost::adjacency_list<boost::listS, boost::vecS, boost::undirectedS, boost::no_property, boost::property<boost::edge_weight_t, int> > Graph;
-typedef boost::graph_traits<Graph>::vertex_descriptor Vertex;
 
 void Loop();
 
@@ -49,7 +42,7 @@ static World world;
 Logger logger(world);
 Drive move(world);
 Ecs::Systems::Render render(world, Loop);
-TrafficLightControl trafficLight(world);
+Ecs::Systems::TrafficLight trafficLight(world);
 VehicleCollisionPrevention vcp(world);
 
 // TODO: Move path to first parameter
@@ -63,10 +56,16 @@ void CreateCarEntity(int x, int y, int speed, Path path, Color color) {
 
 int CreateTrafficLightEntity(int x, int y) {
     auto entity = world.CreateEntity();
-    world.AddComponent(TrafficLight(), entity);
+    world.AddComponent(Ecs::Components::TrafficLight(), entity);
     world.AddComponent(Transform(x, y), entity);
-    world.AddComponent(Ecs::Components::Render("trafficLight"), entity);
     return entity.GetId();
+}
+
+void CreateRoadGraphEntity(std::vector<Edge> edges) {
+    auto entity = world.CreateEntity();
+    world.AddComponent(RoadGraph(edges), entity);
+    world.AddComponent(Transform(), entity);
+    world.AddComponent(Ecs::Components::Render("roadGraph", Color(0.7, 0.7, 0.7)), entity);
 }
 
 int main() {
@@ -84,25 +83,19 @@ int main() {
     edges.emplace_back(C, E);
     edges.emplace_back(D, F);
     edges.emplace_back(E, F);
+
     auto g = CreateGraph(edges);
+    CreateRoadGraphEntity(edges);
+
     CreateCarEntity(-5500, 5050, 30, GetPath(g, A, F), Color(0, 0, 1));
     CreateCarEntity(-6000, 5050, 35, GetPath(g, A, F), Color(1, 1, 0));
-    CreateCarEntity(5300, -5200, 30, GetPath(g, F, C), Color(1, 0 ,0));
+    CreateCarEntity(5300, -5200, 30, GetPath(g, F, C), Color(1, 0, 0));
     CreateCarEntity(5300, -5800, 35, GetPath(g, F, C), Color(0, 1, 0));
 
 
     render.Start();
 }
 
-int GetWeight(Edge edge) {
-    auto trafficlight1Transform = world.GetComponent<Transform>(edge.first);
-    auto trafficlight2Transform = world.GetComponent<Transform>(edge.second);
-
-    auto x = trafficlight1Transform.X - trafficlight2Transform.X;
-    auto y = trafficlight1Transform.Y - trafficlight2Transform.Y;
-
-    return std::sqrt(x * x + y * y);
-}
 
 Path GetPath(Graph g, int startpointId, int endpointId) {
     // vector for storing distance property
@@ -141,18 +134,30 @@ Path GetPath(Graph g, int startpointId, int endpointId) {
     return path;
 }
 
-Graph CreateGraph(std::vector<Edge> &edges) {
-    // Make convenient labels for the vertices
-    const int num_vertices = edges.size();
+int GetWeight(Edge edge) {
+    auto trafficlight1Transform = world.GetComponent<Transform>(edge.first);
+    auto trafficlight2Transform = world.GetComponent<Transform>(edge.second);
+
+    auto x = trafficlight1Transform.X - trafficlight2Transform.X;
+    auto y = trafficlight1Transform.Y - trafficlight2Transform.Y;
+
+    return std::sqrt(x * x + y * y);
+}
+
+Graph CreateGraph(std::vector<Edge> &edges)
+{
+    const unsigned int num_vertices = edges.size();
     int weights[num_vertices];
     int j = 0;
     for (auto i = edges.begin(); i != edges.end(); ++i) {
         weights[j] = GetWeight(*i.base());
         j++;
     }
-    // declare a graph object
+
     return Graph(&edges[0], &edges[num_vertices], weights, num_vertices);
 }
+
+
 
 void Loop() {
     logger.Update();

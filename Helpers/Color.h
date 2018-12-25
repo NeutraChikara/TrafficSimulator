@@ -7,10 +7,10 @@
 
 namespace Ecs::Helpers {
 struct Color {
-    Color(double R = 0.5, double G = 0.5, double B = 0.5);
-    double R;
-    double G;
-    double B;
+    Color(float R = 0.5, float G = 0.5, float B = 0.5);
+    float R;
+    float G;
+    float B;
 };
 }
 

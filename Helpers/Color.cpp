@@ -4,4 +4,4 @@
 
 #include "Color.h"
 
-Ecs::Helpers::Color::Color(double R, double G, double B) : R(R), G(G), B(B) {}
+Ecs::Helpers::Color::Color(float R, float G, float B) : R(R), G(G), B(B) {}

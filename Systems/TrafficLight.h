@@ -8,9 +8,9 @@
 
 #include "System.h"
 namespace Ecs::Systems {
-    class TrafficLightControl : public Ecs::Systems::System {
+    class TrafficLight : public Ecs::Systems::System {
     public:
-        TrafficLightControl(World &world);
+        TrafficLight(World &world);
 
     protected:
         void OnUpdate(Entity e) override;
