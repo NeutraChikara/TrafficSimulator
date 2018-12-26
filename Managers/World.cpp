@@ -13,12 +13,12 @@ namespace Ecs::Managers {
 
 //TODO: Avoid using list of entities
     Entity World::CreateEntity() {
-        auto id = entities.size();
-        entities.push_back(Entity(id));
-        return entities[id];
+        auto id = Entities.size();
+        Entities.push_back(Entity(id));
+        return Entities[id];
     }
 
-    void World::kill(Entity e) {
+    void World::Kill(Entity e) {
         mask[e.GetId()] = 0;
 
     }

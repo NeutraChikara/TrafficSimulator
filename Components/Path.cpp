@@ -4,4 +4,4 @@
 
 #include "Path.h"
 
-Ecs::Components::Path::Path() : IndexOfCurrentPoint(0) {}
+Ecs::Components::Path::Path() : IndexOfCurrentNode(0) {}

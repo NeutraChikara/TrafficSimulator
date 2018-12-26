@@ -36,9 +36,9 @@ namespace Ecs::Managers {
 
         uint32_t Getmask(Entity::Id id);
 
-        std::vector<Entity> entities;
+        void Kill(Entity e);
 
-        void kill(Entity e);
+        std::vector<Entity> Entities;
 
     private:
         void Addmask(Entity::Id id, int ComponentId);

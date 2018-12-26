@@ -21,8 +21,6 @@ namespace Ecs::Systems {
         template<typename Component, typename... Components>
         constexpr void SetRequiredComponents();
 
-        World &world;
-
         System(World &world);
 
         virtual void Update();
@@ -30,8 +28,10 @@ namespace Ecs::Systems {
     protected:
         virtual void OnUpdate(Entity e) = 0;
         bool HasRequiredComponents(Entity entity);
+        World &world;
     private:
         unsigned int RequiredComponentsMask = 0;
+
     };
 
 // TODO: Tjek om constexpr gør noget
