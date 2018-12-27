@@ -22,17 +22,21 @@ namespace Ecs::Systems {
         auto &path = world.GetComponent<Path>(e.GetId());
 
         auto point = path.Nodes[path.IndexOfCurrentNode];
-
         auto pointX = world.GetComponent<Transform>(point.trafficLightEntityId).X;
         auto pointY = world.GetComponent<Transform>(point.trafficLightEntityId).Y;
+
+        //Hitting towards  x => -y -x => y  y => X  -Y=> -X
+
+        pointX += GetXCompensation(point.entrancePoint, point.exitPoint);
+        pointY += GetYCompensation(point.entrancePoint, point.exitPoint);
 
         int vectorX = pointX - transform.X;
         int vectorY = pointY - transform.Y;
 
         double length = std::sqrt(vectorX * vectorX + vectorY * vectorY);
 
-        //if (length < 50 && !LightIsGo(point)) // TODO: Reeable to stop for red traffic light
-        //  return;
+        if (length < 500 && !LightIsGo(point)) // TODO: Reeable to stop for red traffic light
+            return;
 
         if (length < 20) {
             path.IndexOfCurrentNode++;
@@ -72,4 +76,23 @@ namespace Ecs::Systems {
         auto light = world.GetComponent<TrafficLight>(trafficLight.trafficLightEntityId);
         return light.IsDirectionAllowed[trafficLight.entrancePoint];
     }
+
+    int Drive::GetXCompensation(int Entrypoint, int ExitPoint) {
+        if (Entrypoint == 1 || Entrypoint == 3) {
+            return (Entrypoint == 1 ? -200 : 200);
+        } else if (ExitPoint == 1 || ExitPoint == 3) {
+            return (ExitPoint != 1 ? -200 : 200);
+        } else
+            return 0;
+    }
+
+    int Drive::GetYCompensation(int Entrypoint, int ExitPoint) {
+        if (Entrypoint == 0 || Entrypoint == 2) {
+            return (Entrypoint == 0 ? -200 : 200);
+        } else if (ExitPoint == 0 || ExitPoint == 2) {
+            return (ExitPoint != 0 ? -200 : 200);
+        } else
+            return 0;
+    }
 }
+

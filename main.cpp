@@ -25,6 +25,7 @@
 #include "Helpers/Visitor.h"
 #include "Systems/VehicleCollisionPrevention.h"
 #include "Components/RoadGraph.h"
+#include "Helpers/Roads.h"
 
 using namespace Ecs::Components;
 using namespace Ecs::Systems;
@@ -82,7 +83,7 @@ int main() {
     edges.emplace_back(C, D);
     edges.emplace_back(C, E);
     edges.emplace_back(D, F);
-    edges.emplace_back(E, F);
+    //edges.emplace_back(E, F);
 
     auto g = CreateGraph(edges);
     CreateRoadGraphEntity(edges);
@@ -91,8 +92,9 @@ int main() {
     CreateCarEntity(-6000, 5050, 35, GetPath(g, A, F), Color(1, 1, 0));
     CreateCarEntity(5300, -5200, 30, GetPath(g, F, C), Color(1, 0, 0));
     CreateCarEntity(5300, -5800, 35, GetPath(g, F, C), Color(0, 1, 0));
-
-
+    CreateCarEntity(5000, 5000, 30, GetPath(g, E, A), Color(0, 0, 1));
+    CreateCarEntity(-6500, 5050, 30, GetPath(g, A, E), Color(0, 0, 1));
+    CreateCarEntity(-5050, -5050, 30, GetPath(g, B, C), Color(0, 0, 1));
     render.Start();
 }
 
@@ -130,7 +132,22 @@ Path GetPath(Graph g, int startpointId, int endpointId) {
     }
     path.Nodes.emplace_back(endpointId);
 
+    for (int j = 0; j < path.Nodes.size(); ++j) {
+        int id = path.Nodes[j].trafficLightEntityId;
+        auto primaryLight = world.GetComponent<Transform>(id);
+        if (j != 0) {
+            auto lastLight = world.GetComponent<Transform>(path.Nodes[j - 1].trafficLightEntityId);
+            path.Nodes[j].entrancePoint = Roads::GetEntrypoint(lastLight.X, lastLight.Y, primaryLight.X,
+                                                               primaryLight.Y);
+        }
 
+        if (j != (path.Nodes.size() - 1)) {
+            auto nextLight = world.GetComponent<Transform>(path.Nodes[j + 1].trafficLightEntityId);
+            path.Nodes[j].exitPoint = Roads::GetExitPoint(primaryLight.X, primaryLight.Y, nextLight.X, nextLight.Y);
+        }
+    }
+    path.Nodes[0].entrancePoint = path.Nodes[0].exitPoint+2 %4;
+    path.Nodes[path.Nodes.size() -1].exitPoint = path.Nodes[0].entrancePoint+2 %4;
     return path;
 }
 
@@ -144,8 +161,7 @@ int GetWeight(Edge edge) {
     return std::sqrt(x * x + y * y);
 }
 
-Graph CreateGraph(std::vector<Edge> &edges)
-{
+Graph CreateGraph(std::vector<Edge> &edges) {
     const unsigned int num_vertices = edges.size();
     int weights[num_vertices];
     int j = 0;
@@ -156,7 +172,6 @@ Graph CreateGraph(std::vector<Edge> &edges)
 
     return Graph(&edges[0], &edges[num_vertices], weights, num_vertices);
 }
-
 
 
 void Loop() {
