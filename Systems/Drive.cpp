@@ -25,8 +25,6 @@ namespace Ecs::Systems {
         auto pointX = world.GetComponent<Transform>(point.trafficLightEntityId).X;
         auto pointY = world.GetComponent<Transform>(point.trafficLightEntityId).Y;
 
-        //Hitting towards  x => -y -x => y  y => X  -Y=> -X
-
         pointX += GetXCompensation(point.entrancePoint, point.exitPoint);
         pointY += GetYCompensation(point.entrancePoint, point.exitPoint);
 
@@ -35,7 +33,7 @@ namespace Ecs::Systems {
 
         double length = std::sqrt(vectorX * vectorX + vectorY * vectorY);
 
-        if (length < 500 && !LightIsGo(point)) // TODO: Reeable to stop for red traffic light
+        if (length < 700 && length > 500  && !LightIsGo(point)) // TODO: Reeable to stop for red traffic light
             return;
 
         if (length < 20) {
