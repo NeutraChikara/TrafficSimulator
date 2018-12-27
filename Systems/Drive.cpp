@@ -33,7 +33,7 @@ namespace Ecs::Systems {
 
         double length = std::sqrt(vectorX * vectorX + vectorY * vectorY);
 
-        if (length < 800 && length > 500 && !LightIsGo(point)) // TODO: Reeable to stop for red traffic light
+        if (length < 700 && length > 500  && !LightIsGo(point)) // TODO: Reeable to stop for red traffic light
             return;
 
         if (length < 20) {
