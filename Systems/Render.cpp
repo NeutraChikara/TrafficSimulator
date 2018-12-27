@@ -72,9 +72,14 @@ void RenderRoad(Transform first, Transform second, Color color) {
 
     auto vectorX = x1 - x2;
     auto vectorY = y1 - y2;
+    auto length = std::sqrt(vectorX * vectorX + vectorY * vectorY);
+    auto midLineLength = 0.01f;
+    auto midLineWidth = 0.0015f;
+    auto midLineSeperationDistance = 0.035f;
     auto trackWidth = 0.045f;
     auto lineWidth = 0.002f;
     auto junctionPadding = trackWidth;
+    auto numOfMidLines = static_cast<int>((length - 2 * junctionPadding) / (midLineLength + midLineSeperationDistance));
 
     if (vectorY == 0) {
         glVertex2f(x1 + junctionPadding, y1 + trackWidth);
@@ -86,6 +91,17 @@ void RenderRoad(Transform first, Transform second, Color color) {
         glVertex2f(x2 - junctionPadding, y2 - trackWidth);
         glVertex2f(x2 - junctionPadding, y2 - lineWidth - trackWidth);
         glVertex2f(x1 + junctionPadding, y1 - lineWidth - trackWidth);
+
+        while (numOfMidLines--) {
+            auto currentStartX = (midLineSeperationDistance + midLineLength) * numOfMidLines;
+            glVertex2f(x1 + junctionPadding + currentStartX + midLineSeperationDistance, y1 + midLineWidth);
+            glVertex2f(x1 + junctionPadding + currentStartX + midLineSeperationDistance + midLineLength,
+                       y1 + midLineWidth);
+            glVertex2f(x1 + junctionPadding + currentStartX + midLineSeperationDistance + midLineLength,
+                       y1 - midLineWidth);
+            glVertex2f(x1 + junctionPadding + currentStartX + midLineSeperationDistance, y1 - midLineWidth);
+        }
+
     } else if (vectorX == 0) {
         glVertex2f(x1 + trackWidth, y1 - junctionPadding);
         glVertex2f(x2 + trackWidth, y2 + junctionPadding);
@@ -96,6 +112,14 @@ void RenderRoad(Transform first, Transform second, Color color) {
         glVertex2f(x2 - trackWidth, y2 + junctionPadding);
         glVertex2f(x2 - trackWidth + lineWidth, y2 + junctionPadding);
         glVertex2f(x1 - trackWidth + lineWidth, y1 - junctionPadding);
+
+        while (numOfMidLines--) {
+            auto currentStartY = (midLineSeperationDistance + midLineLength) * numOfMidLines;
+            glVertex2f(x1 + midLineWidth, y1 - junctionPadding - currentStartY - midLineSeperationDistance);
+            glVertex2f(x1 + midLineWidth, y1 - junctionPadding - currentStartY - midLineSeperationDistance - midLineLength);
+            glVertex2f(x1 - midLineWidth, y1 - junctionPadding - currentStartY - midLineSeperationDistance - midLineLength);
+            glVertex2f(x1 - midLineWidth, y1 - junctionPadding - currentStartY - midLineSeperationDistance);
+        }
     }
 
     glEnd();
