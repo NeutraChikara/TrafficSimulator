@@ -17,9 +17,9 @@ namespace Ecs::Systems {
     private:
         bool LightIsGo(Ecs::DataStructures::Node trafficLight);
 
-        int GetXCompensation(int Entrypoint, int ExitPoint);
+        int GetXCompensation(int entrypoint, int exitPoint);
 
-        int GetYCompensation(int Entrypoint, int ExitPoint);
+        int GetYCompensation(int entrypoint, int exitPoint);
 
         int GetEntrypoint(int x, int y, Transform &transform);
 

@@ -25,8 +25,6 @@ namespace Ecs::Systems {
         auto pointX = world.GetComponent<Transform>(point.trafficLightEntityId).X;
         auto pointY = world.GetComponent<Transform>(point.trafficLightEntityId).Y;
 
-        //Hitting towards  x => -y -x => y  y => X  -Y=> -X
-
         pointX += GetXCompensation(point.entrancePoint, point.exitPoint);
         pointY += GetYCompensation(point.entrancePoint, point.exitPoint);
 
@@ -35,7 +33,7 @@ namespace Ecs::Systems {
 
         double length = std::sqrt(vectorX * vectorX + vectorY * vectorY);
 
-        if (length < 500 && !LightIsGo(point)) // TODO: Reeable to stop for red traffic light
+        if (length < 800 && length > 500 && !LightIsGo(point)) // TODO: Reeable to stop for red traffic light
             return;
 
         if (length < 20) {
@@ -55,9 +53,7 @@ namespace Ecs::Systems {
 
         length = std::sqrt(vectorX * vectorX + vectorY * vectorY);
         transform.X += (vectorX / length) * vel.Speed;
-        auto test1 = (vectorY / length);
-        auto test2 = test1 * vel.Speed;
-        transform.Y += test2;
+        transform.Y += (vectorY / length) * vel.Speed;
 
 
         auto x1 = vectorX;
@@ -69,7 +65,7 @@ namespace Ecs::Systems {
         auto determinant = y1 * x2 - x1 * y2;
         auto angle = atan2(determinant, dotProduct) * 180 / boost::math::constants::pi<double>();
 
-        transform.Orientation = angle;
+        transform.Orientation = static_cast<int>(angle);
     }
 
     bool Drive::LightIsGo(Ecs::DataStructures::Node trafficLight) {
@@ -77,20 +73,20 @@ namespace Ecs::Systems {
         return light.IsDirectionAllowed[trafficLight.entrancePoint];
     }
 
-    int Drive::GetXCompensation(int Entrypoint, int ExitPoint) {
-        if (Entrypoint == 1 || Entrypoint == 3) {
-            return (Entrypoint == 1 ? -200 : 200);
-        } else if (ExitPoint == 1 || ExitPoint == 3) {
-            return (ExitPoint != 1 ? -200 : 200);
+    int Drive::GetXCompensation(int entrypoint, int exitPoint) {
+        if (entrypoint == 1 || entrypoint == 3) {
+            return (entrypoint == 1 ? -200 : 200);
+        } else if (exitPoint == 1 || exitPoint == 3) {
+            return (exitPoint != 1 ? -200 : 200);
         } else
             return 0;
     }
 
-    int Drive::GetYCompensation(int Entrypoint, int ExitPoint) {
-        if (Entrypoint == 0 || Entrypoint == 2) {
-            return (Entrypoint == 0 ? -200 : 200);
-        } else if (ExitPoint == 0 || ExitPoint == 2) {
-            return (ExitPoint != 0 ? -200 : 200);
+    int Drive::GetYCompensation(int entrypoint, int exitPoint) {
+        if (entrypoint == 0 || entrypoint == 2) {
+            return (entrypoint == 0 ? -200 : 200);
+        } else if (exitPoint == 0 || exitPoint == 2) {
+            return (exitPoint != 0 ? -200 : 200);
         } else
             return 0;
     }

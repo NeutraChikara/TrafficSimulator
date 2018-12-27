@@ -88,13 +88,13 @@ int main() {
     auto g = CreateGraph(edges);
     CreateRoadGraphEntity(edges);
 
-    CreateCarEntity(-5500, 5050, 30, GetPath(g, A, F), Color(0, 0, 1));
-    CreateCarEntity(-6000, 5050, 35, GetPath(g, A, F), Color(1, 1, 0));
-    CreateCarEntity(5300, -5200, 30, GetPath(g, F, C), Color(1, 0, 0));
-    CreateCarEntity(5300, -5800, 35, GetPath(g, F, C), Color(0, 1, 0));
-    CreateCarEntity(5000, 5000, 30, GetPath(g, E, A), Color(0, 0, 1));
-    CreateCarEntity(-6500, 5050, 30, GetPath(g, A, E), Color(0, 0, 1));
-    CreateCarEntity(-5050, -5050, 30, GetPath(g, B, C), Color(0, 0, 1));
+    //CreateCarEntity(-5500, 5050, 30, GetPath(g, A, F), Color(0, 0, 1));
+    //CreateCarEntity(-6000, 5050, 35, GetPath(g, A, F), Color(1, 1, 0));
+    CreateCarEntity(5500, -5000, 30, GetPath(g, F, C), Color(1, 0, 0));
+    //CreateCarEntity(5300, -5800, 35, GetPath(g, F, C), Color(0, 1, 0));
+    //CreateCarEntity(5000, 5000, 30, GetPath(g, E, A), Color(0, 0, 1));
+    //CreateCarEntity(-6500, 5050, 30, GetPath(g, A, E), Color(0, 0, 1));
+    //CreateCarEntity(-5050, -5050, 30, GetPath(g, B, C), Color(0, 0, 1));
     render.Start();
 }
 
