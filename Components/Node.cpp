@@ -5,5 +5,5 @@
 #include "Node.h"
 
 Ecs::DataStructures::Node::Node(int trafficLightId) : trafficLightEntityId(trafficLightId),
-                                                        entrancePoint(0) {}
+                                                        entrancePoint(0), exitPoint(0) {}
 
