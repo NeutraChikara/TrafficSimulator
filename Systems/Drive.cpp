@@ -81,18 +81,18 @@ namespace Ecs::Systems {
 
     int Drive::GetXCompensation(int entrypoint, int exitPoint) {
         if (entrypoint == 1 || entrypoint == 3) {
-            return (entrypoint == 1 ? -200 : 200);
+            return (entrypoint == 1 ? 200 : -200);
         } else if (exitPoint == 1 || exitPoint == 3) {
-            return (exitPoint != 1 ? -200 : 200);
+            return (exitPoint != 1 ? 200 : -200);
         } else
             return 0;
     }
 
     int Drive::GetYCompensation(int entrypoint, int exitPoint) {
         if (entrypoint == 0 || entrypoint == 2) {
-            return (entrypoint == 0 ? -200 : 200);
+            return (entrypoint == 0 ? 200 : -200);
         } else if (exitPoint == 0 || exitPoint == 2) {
-            return (exitPoint != 0 ? -200 : 200);
+            return (exitPoint != 0 ? 200 : -200);
         } else
             return 0;
     }

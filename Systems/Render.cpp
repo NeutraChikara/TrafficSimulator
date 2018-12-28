@@ -128,6 +128,75 @@ void RenderRoad(Transform first, Transform second, Color color) {
     glPopMatrix();
 }
 
+void RenderLightBox(GLfloat width, GLfloat height, bool isGreen, Color color) {
+    auto centerWidth = width / 2;
+    auto centerHeight = height / 2;
+    glBegin(GL_LINE_LOOP);
+    glColor3f(color.R, color.G, color.B);
+    glVertex2f(-centerWidth, -centerHeight);
+    glVertex2f(centerWidth, -centerHeight);
+    glVertex2f(centerWidth, centerHeight);
+    glVertex2f(-centerWidth, centerHeight);
+    glEnd();
+
+    if (isGreen) {
+        glTranslatef(0, centerHeight /2, 0);
+        glColor3f(0, 1, 0);
+    } else {
+        glTranslatef(0, -centerHeight /2, 0);
+        glColor3f(1, 0, 0);
+    }
+
+    glBegin(GL_QUADS);
+    auto size = 0.007f;
+    glVertex2f(-size, -size);
+    glVertex2f(size, -size);
+    glVertex2f(size, size);
+    glVertex2f(-size, size);
+    glEnd();
+}
+
+void RenderTrafficLight(Transform transform, bool directionAllowed[], Color color) {
+    auto x = transform.X;
+    auto y = transform.Y;
+    auto rotationInDegrees = 0;
+    auto width = 0.03f;
+    auto height = 0.05f;
+    auto lightX = 0.075f;
+    auto lightY = 0.08f;
+
+    glPushMatrix();
+    glTranslatef(x / 10000.f, y / 10000.f, 0);
+
+    glPushMatrix();
+    glTranslatef(lightX, -lightY, 0);
+    RenderLightBox(width, height, directionAllowed[3], color);
+    glPopMatrix();
+
+    glPushMatrix();
+    rotationInDegrees = -90;
+    glRotatef(rotationInDegrees, 0.0f, 0.0f, 1.0f);
+    glTranslatef(lightX, -lightY, 0);
+    RenderLightBox(width, height, directionAllowed[0], color);
+    glPopMatrix();
+
+    glPushMatrix();
+    rotationInDegrees = 180;
+    glRotatef(rotationInDegrees, 0.0f, 0.0f, 1.0f);
+    glTranslatef(lightX, -lightY, 0);
+    RenderLightBox(width, height, directionAllowed[1], color);
+    glPopMatrix();
+
+    glPushMatrix();
+    rotationInDegrees = 90;
+    glRotatef(rotationInDegrees, 0.0f, 0.0f, 1.0f);
+    glTranslatef(lightX, -lightY, 0);
+    RenderLightBox(width, height, directionAllowed[2], color);
+    glPopMatrix();
+
+    glPopMatrix();
+}
+
 // Handler for window re-size event. Called back when the window first appears and
 // whenever the window is re-sized with its new width and height
 void reshape(GLsizei width, GLsizei height) {  // GLsizei for non-negative integer
@@ -207,6 +276,10 @@ namespace Ecs::Systems {
 
                 RenderRoad(firstTransform, secondTransform, r.Color);
             }
+        } else if (r.Type == "trafficLight") {
+            auto directionAllowed = world.GetComponent<Ecs::Components::TrafficLight>(e.GetId()).IsDirectionAllowed;
+            auto transform = world.GetComponent<Transform>(e.GetId());
+            RenderTrafficLight(transform, directionAllowed, r.Color);
         }
 
     }
@@ -243,7 +316,8 @@ namespace Ecs::Systems {
                 Increase = false;
                 Update();
                 break;
-            default:break;
+            default:
+                break;
         }
     }
 

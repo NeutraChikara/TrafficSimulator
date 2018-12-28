@@ -37,11 +37,11 @@ void Loop();
 
 Graph CreateGraph(std::vector<Edge> &edges);
 
-Path GetPath(Graph g, int startpointId, int endpointId);
+Path GetPath(Graph g, int startPointId, int endpointId);
 
 static World world;
 Logger logger(world);
-Drive move(world);
+Drive drive(world);
 Ecs::Systems::Render render(world, Loop);
 Ecs::Systems::TrafficLight trafficLight(world);
 VehicleCollisionPrevention vcp(world);
@@ -59,6 +59,7 @@ int CreateTrafficLightEntity(int x, int y) {
     auto entity = world.CreateEntity();
     world.AddComponent(Ecs::Components::TrafficLight(), entity);
     world.AddComponent(Transform(x, y), entity);
+    world.AddComponent(Ecs::Components::Render("trafficLight", Color(0.7, 0.7, 0.7)), entity);
     return entity.GetId();
 }
 
@@ -99,7 +100,7 @@ int main() {
 }
 
 
-Path GetPath(Graph g, int startpointId, int endpointId) {
+Path GetPath(Graph g, int startPointId, int endpointId) {
     // vector for storing distance property
     std::vector<int> d(num_vertices(g));
     std::vector<Vertex> p(num_vertices(g), boost::graph_traits<Graph>::null_vertex()); //the predecessor array
@@ -127,7 +128,7 @@ Path GetPath(Graph g, int startpointId, int endpointId) {
 
     Path path;
 
-    for (int i = startpointId; i != endpointId; i = p[i]) {
+    for (int i = startPointId; i != endpointId; i = p[i]) {
         path.Nodes.emplace_back(i);
     }
     path.Nodes.emplace_back(endpointId);
@@ -177,7 +178,7 @@ Graph CreateGraph(std::vector<Edge> &edges) {
 void Loop() {
     logger.Update();
     trafficLight.Update();
-    move.Update();
+    drive.Update();
     vcp.Update();
     render.Update();
 }
