@@ -10,10 +10,11 @@
 
 namespace Ecs::Components {
     struct TrafficLight : Component {
-        TrafficLight() : IsDirectionAllowed{true, false, true, false} {}
+        TrafficLight();
 
         bool IsDirectionAllowed[4];
         unsigned int LastChangedCounter;
+        unsigned int CountsBeforeChange;
     };
 }
 

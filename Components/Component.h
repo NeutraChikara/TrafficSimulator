@@ -6,11 +6,7 @@
 #define TRAFFICSIMULATOR_COMPONENT_H
 
 namespace Ecs::Components {
-
-    struct Component {
-
-    };
-
+    struct Component {};
 }
 
 #endif //TRAFFICSIMULATOR_COMPONENT_H

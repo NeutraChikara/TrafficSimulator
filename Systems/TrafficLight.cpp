@@ -12,7 +12,7 @@ namespace Ecs::Systems {
     void TrafficLight::OnUpdate(Entity e) {
         auto &light = world.GetComponent<Ecs::Components::TrafficLight>(e.GetId());
         light.LastChangedCounter++;
-        if (light.LastChangedCounter > 50) {
+        if (light.LastChangedCounter > light.CountsBeforeChange) {
             light.LastChangedCounter = 0;
             light.IsDirectionAllowed[0] = !light.IsDirectionAllowed[0];
             light.IsDirectionAllowed[1] = !light.IsDirectionAllowed[1];

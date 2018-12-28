@@ -24,6 +24,8 @@ namespace Ecs::Systems {
         int GetEntrypoint(int x, int y, Transform &transform);
 
         int GetExitPoint(int x, int y, Path &path);
+
+        int CalculateOrientation(int vectorX, int vectorY);
     };
 }
 
