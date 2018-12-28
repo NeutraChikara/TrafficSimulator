@@ -15,6 +15,7 @@
 #include "../Components/RoadGraph.h"
 #include <tuple>
 #include <vector>
+#include <stdexcept>
 
 namespace Ecs::Managers {
     using namespace Ecs::Components;
@@ -56,6 +57,8 @@ namespace Ecs::Managers {
 //TODO: Should return a copy and have set/update component method
     template<typename T>
     T &World::GetComponent(Entity::Id id) {
+        if(id >= EntityCount || !(mask[id] & 1 << ComponentUtility<T>::GetId()) )
+            throw  std::invalid_argument("No such component or entity exists");
         return std::get<T>(components[id]);
     }
 }
