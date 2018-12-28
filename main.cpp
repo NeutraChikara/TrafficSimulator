@@ -26,6 +26,7 @@
 #include "Systems/VehicleCollisionPrevention.h"
 #include "Components/RoadGraph.h"
 #include "Helpers/Roads.h"
+#include "Systems/TrafficGeneration.h"
 
 using namespace Ecs::Components;
 using namespace Ecs::Systems;
@@ -87,6 +88,8 @@ int main() {
 
     auto g = CreateGraph(edges);
     CreateRoadGraphEntity(edges);
+    int StartPoints[] = {A,C,F};
+    TrafficGeneration trafficGeneration(world, g, StartPoints,3);
 
     CreateCarEntity(-5500, 5050, 30, GetPath(g, A, F), Color(0, 0, 1));
     CreateCarEntity(-6000, 5050, 35, GetPath(g, A, F), Color(1, 1, 0));

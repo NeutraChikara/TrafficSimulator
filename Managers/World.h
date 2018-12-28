@@ -40,12 +40,13 @@ namespace Ecs::Managers {
         void Kill(Entity e);
 
         std::vector<Entity> Entities;
-
+        //uint32_t mask[EntityCount]{0};
+        std::vector<uint32_t> mask;
     private:
         void Addmask(Entity::Id id, int ComponentId);
 
         Components components[EntityCount];
-        uint32_t mask[EntityCount]{0};
+
     };
 
     template<typename T>
@@ -57,7 +58,7 @@ namespace Ecs::Managers {
 //TODO: Should return a copy and have set/update component method
     template<typename T>
     T &World::GetComponent(Entity::Id id) {
-        if(id >= EntityCount || !(mask[id] & 1 << ComponentUtility<T>::GetId()) )
+        if(id >= mask.size() || !(mask[id] & 1 << ComponentUtility<T>::GetId()) )
             throw  std::invalid_argument("No such component or entity exists");
         return std::get<T>(components[id]);
     }
