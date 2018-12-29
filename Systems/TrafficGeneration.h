@@ -26,6 +26,8 @@ namespace Ecs::Systems {
 
     protected:
         void OnUpdate(Entity e) override;
+    private:
+        unsigned int Ticks;
     };
 }
 

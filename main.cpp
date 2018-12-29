@@ -49,6 +49,7 @@ VehicleCollisionPrevention vcp(world);
 Ecs::Systems::TrafficGeneration * trafficGeneration;
 
 // TODO: Move path to first parameter
+
 void CreateCarEntity(int x, int y, int speed, Path path, Color color) {
     auto entity = world.CreateEntity();
     world.AddComponent(SpeedAndAcceleration(speed), entity);
@@ -93,13 +94,13 @@ int main() {
     int StartPoints[] = {A,C,F};
     trafficGeneration = new TrafficGeneration(world, g, StartPoints,3);
 
-    CreateCarEntity(-5500, 5050, 30, GetPath(g, A, F), Color(0, 0, 1));
-    CreateCarEntity(-6000, 5050, 35, GetPath(g, A, F), Color(1, 1, 0));
-    CreateCarEntity(5800, -5000, 30, GetPath(g, F, C), Color(1, 0, 0));
-    CreateCarEntity(6020, -5100, 20, GetPath(g, F, A), Color(1, 1, 0));
-    CreateCarEntity(5000, 5000, 30, GetPath(g, E, A), Color(0, 0, 1));
-    CreateCarEntity(-6500, 5050, 30, GetPath(g, A, E), Color(0, 0, 1));
-    CreateCarEntity(-5050, -5050, 30, GetPath(g, B, C), Color(0, 0, 1));
+    //CreateCarEntity(-5500, 5050, 30, GetPath(g, A, F), Color(0, 0, 1));
+    //CreateCarEntity(-6000, 5050, 35, GetPath(g, A, F), Color(1, 1, 0));
+    //CreateCarEntity(5800, -5000, 30, GetPath(g, F, C), Color(1, 0, 0));
+    //CreateCarEntity(6020, -5100, 20, GetPath(g, F, A), Color(1, 1, 0));
+    //CreateCarEntity(5000, 5000, 30, GetPath(g, E, A), Color(0, 0, 1));
+    //CreateCarEntity(-6500, 5050, 30, GetPath(g, A, E), Color(0, 0, 1));
+    //CreateCarEntity(-5050, -5050, 30, GetPath(g, B, C), Color(0, 0, 1));
     render.Start();
 }
 

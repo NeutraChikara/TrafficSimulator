@@ -39,7 +39,7 @@ namespace Ecs::Systems {
             if (vel.Speed < 0) vel.Speed = 0;
         }
 
-        if (length < 20) {
+        if (length < 50) {
             path.IndexOfCurrentNode++;
             if (path.IndexOfCurrentNode == path.Nodes.size()) {
                 world.Kill(e);

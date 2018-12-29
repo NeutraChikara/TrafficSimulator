@@ -6,34 +6,40 @@
 #include "../Helpers/Visitor.h"
 #include "../Helpers/Roads.h"
 
-Ecs::Systems::TrafficGeneration::TrafficGeneration(World &world, Graph &graph,  int * startpointIds, int numberOfStartpoint ) : System(world), graph(graph)
-,numberOfStartpoint(numberOfStartpoint), startpointIds(startpointIds)  {}
+Ecs::Systems::TrafficGeneration::TrafficGeneration(World &world, Graph &graph, int *startpointIds,
+                                                   int numberOfStartpoint) : System(world), graph(graph),
+                                                                             numberOfStartpoint(numberOfStartpoint),
+                                                                             startpointIds(startpointIds),
+                                                                             Ticks(0) {}
 
 void Ecs::Systems::TrafficGeneration::Update() {
 
-    //How many, should be generated should create Cause
-    int numberOfCars = ((rand() % 1000)-995 );
-
-    for (int i = 0; i < numberOfCars; ++i) {
+    //How many should be generated should create Cause
+    if (Ticks == 0) {
+        auto minTicks = 30;
+        auto maxTicks = 60;
+        Ticks = rand() % (maxTicks - minTicks) + minTicks;
         GenerateCar();
-    }
-
-
+    } else --Ticks;
 }
 
 void Ecs::Systems::TrafficGeneration::GenerateCar() {
     int endpoint = rand() % numberOfStartpoint;
     int startpoint = rand() % numberOfStartpoint;
-    startpoint =(startpoint != endpoint ? startpoint :(startpoint +1) % numberOfStartpoint);
+    startpoint = (startpoint != endpoint ? startpoint : (startpoint + 1) % numberOfStartpoint);
     auto path = GetPath(graph, startpointIds[startpoint], startpointIds[endpoint]);
 
     auto node = path.Nodes[0];
     auto transform = world.GetComponent<Transform>(node.trafficLightEntityId);
-    int pointX = transform.X + (node.entrancePoint ==0 ?1000 : 0 )+(node.entrancePoint ==2 ? -1000 : 0 ) ;
-    int pointY = transform.Y+ (node.entrancePoint ==1 ? -1000 : 0 )+(node.entrancePoint ==3 ? 1000 : 0 ) ;
-
-    CreateCarEntity(pointX, pointY, 10, path, Color(1, 0.5, 1));
-
+    int pointX = transform.X + (node.entrancePoint == 0 ? 1000 : 0) + (node.entrancePoint == 2 ? -1000 : 0);
+    int pointY = transform.Y + (node.entrancePoint == 1 ? -1000 : 0) + (node.entrancePoint == 3 ? 1000 : 0);
+    float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+    float g = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+    float b = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+    auto minSpeed = 10;
+    auto maxSpeed = 40;
+    auto speed = rand() % (maxSpeed - minSpeed) + minSpeed;
+    CreateCarEntity(pointX, pointY, speed, path, Color(r, g, b));
 }
 
 void Ecs::Systems::TrafficGeneration::CreateCarEntity(int x, int y, int speed, Path path, Color color) {
