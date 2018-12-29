@@ -12,7 +12,7 @@ Ecs::Systems::TrafficGeneration::TrafficGeneration(World &world, Graph &graph,  
 void Ecs::Systems::TrafficGeneration::Update() {
 
     //How many, should be generated should create Cause
-    int numberOfCars = (rand() % 100) / 40;
+    int numberOfCars = ((rand() % 1000)-995 );
 
     for (int i = 0; i < numberOfCars; ++i) {
         GenerateCar();
@@ -22,14 +22,17 @@ void Ecs::Systems::TrafficGeneration::Update() {
 }
 
 void Ecs::Systems::TrafficGeneration::GenerateCar() {
-    auto path = GetPath(graph, startpointIds[rand() % 10], startpointIds[rand() % 10]);
+    int endpoint = rand() % numberOfStartpoint;
+    int startpoint = rand() % numberOfStartpoint;
+    startpoint =(startpoint != endpoint ? startpoint :(startpoint +1) % numberOfStartpoint);
+    auto path = GetPath(graph, startpointIds[startpoint], startpointIds[endpoint]);
 
     auto node = path.Nodes[0];
     auto transform = world.GetComponent<Transform>(node.trafficLightEntityId);
     int pointX = transform.X + (!node.entrancePoint ==0 ?-500 : 0 )+(!node.entrancePoint ==2 ?500 : 0 ) ;
     int pointY = transform.Y+ (!node.entrancePoint ==3 ?-500 : 0 )+(!node.entrancePoint ==1 ?500 : 0 ) ;
 
-    CreateCarEntity(pointX, pointY, 10, path, Color((rand() % 10) / 10, (rand() % 10) / 10, (rand() % 10) / 10));
+    CreateCarEntity(pointX, pointY, 10, path, Color(1, 0.5, 1));
 
 }
 
@@ -54,22 +57,7 @@ Path Ecs::Systems::TrafficGeneration::GetPath(Graph g, int startpointId, int end
     // invoke variant 2 of Dijkstra's algorithm
     dijkstra_shortest_paths(g, endpointId, boost::distance_map(&d[0]).visitor(Visitor(&p[0])));
 
-
-    std::cout << "parents in the tree of shortest paths:" << std::endl;
-    for (auto vi = vertices(g).first; vi != vertices(g).second; ++vi) {
-        std::cout << "parent(" << *vi;
-        if (p[*vi] == boost::graph_traits<Graph>::null_vertex())
-            std::cout << ") = no parent" << std::endl;
-        else
-            std::cout << ") = " << p[*vi] << std::endl;
-    }
-
-
-    std::cout << "distances from start vertex:" << std::endl;
     boost::graph_traits<Graph>::vertex_iterator vi;
-    for (vi = vertices(g).first; vi != vertices(g).second; ++vi)
-        std::cout << d[*vi] << std::endl;
-    std::cout << std::endl;
 
     Path path;
 

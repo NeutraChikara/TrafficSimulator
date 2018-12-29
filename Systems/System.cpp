@@ -6,9 +6,11 @@
 namespace Ecs::Systems {
 
     void System::Update() {
-        std::for_each(world.mask.begin(), world.mask.end(), [this]( int mask, int e) {
-            if (HasRequiredComponents(e))
-                OnUpdate(e);
+        int i = 0;
+        std::for_each(world.mask.begin(), world.mask.end(), [&]( int mask) {
+            if (HasRequiredComponents(mask))
+                OnUpdate(i);
+            i++;
         });
     }
 

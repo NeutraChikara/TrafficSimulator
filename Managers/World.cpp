@@ -18,6 +18,8 @@ namespace Ecs::Managers {
                 return j;
         }
         mask.push_back(0);
+        if (mask.size()>= EntityCount)
+            return EntityCount-1;
         return mask.size()-1 ;
     }
 
