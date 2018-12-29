@@ -29,8 +29,8 @@ void Ecs::Systems::TrafficGeneration::GenerateCar() {
 
     auto node = path.Nodes[0];
     auto transform = world.GetComponent<Transform>(node.trafficLightEntityId);
-    int pointX = transform.X + (!node.entrancePoint ==0 ?-500 : 0 )+(!node.entrancePoint ==2 ?500 : 0 ) ;
-    int pointY = transform.Y+ (!node.entrancePoint ==3 ?-500 : 0 )+(!node.entrancePoint ==1 ?500 : 0 ) ;
+    int pointX = transform.X + (node.entrancePoint ==0 ?1000 : 0 )+(node.entrancePoint ==2 ? -1000 : 0 ) ;
+    int pointY = transform.Y+ (node.entrancePoint ==1 ? -1000 : 0 )+(node.entrancePoint ==3 ? 1000 : 0 ) ;
 
     CreateCarEntity(pointX, pointY, 10, path, Color(1, 0.5, 1));
 
