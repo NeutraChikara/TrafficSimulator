@@ -14,18 +14,26 @@ void Ecs::Systems::VehicleCollisionPrevention::OnUpdate(Entity e) {
     auto transform = world.GetComponent<Transform>(e.GetId());
     auto &velocity = world.GetComponent<SpeedAndAcceleration>(e.GetId());
     bool inTraffic = false;
-    std::for_each(world.Entities.begin(), world.Entities.end(),
-                  [&](Entity other) {
-                      if (HasRequiredComponents(other) && other.GetId() != e.GetId()) {
-                          auto otherTransform = world.GetComponent<Transform>(other.GetId());
+    int i = 0;
+    std::for_each(world.mask.begin(), world.mask.end(),
+                  [&](int mask) {
+                      if (HasRequiredComponents(mask) && i != e.GetId()) {
+                          auto otherTransform = world.GetComponent<Transform>(i);
                           if (!inTraffic && SameDirection(transform, otherTransform) &&
                               DistanceBetween(transform, otherTransform) < 500 &&
                               LastVehicle(transform, otherTransform)) {
                               inTraffic = true;
                               velocity.Speed -= velocity.Deceleration;
                               if (velocity.Speed < 0) velocity.Speed = 0;
+                              std::cout << e.GetId();
+                              if(DistanceBetween(transform, otherTransform) < 5)
+                              {
+                                  world.Kill(e);
+                                  world.Kill(i);
+                              }
                           }
                       }
+                      i++;
                   });
 
     if (!inTraffic) {

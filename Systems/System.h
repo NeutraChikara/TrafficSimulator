@@ -27,7 +27,7 @@ namespace Ecs::Systems {
 
     protected:
         virtual void OnUpdate(Entity e) = 0;
-        bool HasRequiredComponents(Entity entity);
+        bool HasRequiredComponents(int Mask);
         World &world;
     private:
         unsigned int RequiredComponentsMask = 0;

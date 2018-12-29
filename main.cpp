@@ -26,6 +26,7 @@
 #include "Systems/VehicleCollisionPrevention.h"
 #include "Components/RoadGraph.h"
 #include "Helpers/Roads.h"
+#include "Systems/TrafficGeneration.h"
 
 using namespace Ecs::Components;
 using namespace Ecs::Systems;
@@ -45,6 +46,7 @@ Drive drive(world);
 Ecs::Systems::Render render(world, Loop);
 Ecs::Systems::TrafficLight trafficLight(world);
 VehicleCollisionPrevention vcp(world);
+Ecs::Systems::TrafficGeneration * trafficGeneration;
 
 // TODO: Move path to first parameter
 void CreateCarEntity(int x, int y, int speed, Path path, Color color) {
@@ -88,6 +90,8 @@ int main() {
 
     auto g = CreateGraph(edges);
     CreateRoadGraphEntity(edges);
+    int StartPoints[] = {A,C,F};
+    trafficGeneration = new TrafficGeneration(world, g, StartPoints,3);
 
     CreateCarEntity(-5500, 5050, 30, GetPath(g, A, F), Color(0, 0, 1));
     CreateCarEntity(-6000, 5050, 35, GetPath(g, A, F), Color(1, 1, 0));
@@ -180,5 +184,6 @@ void Loop() {
     trafficLight.Update();
     drive.Update();
     vcp.Update();
+    trafficGeneration->Update();
     render.Update();
 }
