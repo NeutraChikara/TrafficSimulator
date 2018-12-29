@@ -25,7 +25,6 @@ void Ecs::Systems::VehicleCollisionPrevention::OnUpdate(Entity e) {
                               inTraffic = true;
                               velocity.Speed -= velocity.Deceleration;
                               if (velocity.Speed < 0) velocity.Speed = 0;
-                              std::cout << e.GetId();
                               if(DistanceBetween(transform, otherTransform) < 5)
                               {
                                   world.Kill(e);
