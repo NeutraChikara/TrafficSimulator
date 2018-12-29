@@ -4,6 +4,7 @@
 
 #include "Render.h"
 #include <GL/glut.h>  // GLUT, include glu.h and gl.h
+#include <iostream>
 
 // GLUT runs as a console application starting at main()
 void RenderRectangle(GLfloat x, GLfloat y, GLfloat directionInDegrees, Color color);
@@ -300,12 +301,14 @@ namespace Ecs::Systems {
         auto &tl = world.GetComponent<Ecs::Components::TrafficLight>(e.GetId());
         if (Increase)
             tl.CountsBeforeChange += 10;
-        else if (tl.CountsBeforeChange != 0) {
+        else if (tl.CountsBeforeChange != 0)
             tl.CountsBeforeChange -= 10;
-        }
+
+        std::cout << e.GetId() << "       " << tl.CountsBeforeChange << std::endl;
     }
 
     void Render::InputHandler::KeyPressed(unsigned char key, int x, int y) {
+
 
         switch (key) {
             case '+' :
@@ -323,5 +326,12 @@ namespace Ecs::Systems {
 
     void Render::InputHandler::KeyPressedWrapper(unsigned char key, int x, int y) {
         Instance->KeyPressed(key, x, y);
+    }
+
+    void Render::InputHandler::Update() {
+        std::cout << "Timing for traffic lights changed" << std::endl;
+        std::cout << "Id" << "      " << "Timing" << std::endl;
+        System::Update();
+        std::cout << std::endl;
     }
 }

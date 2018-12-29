@@ -30,10 +30,10 @@ namespace Ecs::Systems {
             void KeyPressed(unsigned char key, int x, int y);
 
         private:
+            void Update() override;
             void OnUpdate(Entity e) override;
 
             bool Increase;
-
         };
 
         static InputHandler *Instance;

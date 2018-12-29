@@ -176,7 +176,7 @@ Graph CreateGraph(std::vector<Edge> &edges) {
 
 
 void Loop() {
-    logger.Update();
+    //logger.Update();
     trafficLight.Update();
     drive.Update();
     vcp.Update();
