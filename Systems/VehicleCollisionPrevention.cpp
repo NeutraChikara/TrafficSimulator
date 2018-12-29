@@ -28,7 +28,7 @@ void Ecs::Systems::VehicleCollisionPrevention::OnUpdate(Entity e) {
                               std::cout << e.GetId();
                               if(DistanceBetween(transform, otherTransform) < 5)
                               {
-                                  world.Kill(e);
+                                  world.Kill(e
                                   world.Kill(i);
                               }
                           }
