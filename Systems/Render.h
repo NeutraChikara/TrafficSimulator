@@ -9,13 +9,35 @@
 
 namespace Ecs::Systems {
 
-class Render : public System {
-public:
-    Render(World &world, void(* loop)());
-    void OnUpdate(Entity e) override;
-    void Update() override;
-    void Start();
-};
+    class Render : public System {
+    public:
+        Render(World &world, void(*loop)());
+
+        void OnUpdate(Entity e) override;
+
+        void Update() override;
+
+        virtual ~Render();
+
+        void Start();
+
+        void Setup(int argc, char **argv, void (*loop)());
+    private:
+        class InputHandler : private System {
+        public:
+            InputHandler(World &world);
+            static void KeyPressedWrapper(unsigned char key, int x, int y);
+            void KeyPressed(unsigned char key, int x, int y);
+
+        private:
+            void OnUpdate(Entity e) override;
+
+            bool Increase;
+
+        };
+
+        static InputHandler *Instance;
+    };
 
 }
 

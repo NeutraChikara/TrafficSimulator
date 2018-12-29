@@ -116,13 +116,84 @@ void RenderRoad(Transform first, Transform second, Color color) {
         while (numOfMidLines--) {
             auto currentStartY = (midLineSeperationDistance + midLineLength) * numOfMidLines;
             glVertex2f(x1 + midLineWidth, y1 - junctionPadding - currentStartY - midLineSeperationDistance);
-            glVertex2f(x1 + midLineWidth, y1 - junctionPadding - currentStartY - midLineSeperationDistance - midLineLength);
-            glVertex2f(x1 - midLineWidth, y1 - junctionPadding - currentStartY - midLineSeperationDistance - midLineLength);
+            glVertex2f(x1 + midLineWidth,
+                       y1 - junctionPadding - currentStartY - midLineSeperationDistance - midLineLength);
+            glVertex2f(x1 - midLineWidth,
+                       y1 - junctionPadding - currentStartY - midLineSeperationDistance - midLineLength);
             glVertex2f(x1 - midLineWidth, y1 - junctionPadding - currentStartY - midLineSeperationDistance);
         }
     }
 
     glEnd();
+    glPopMatrix();
+}
+
+void RenderLightBox(GLfloat width, GLfloat height, bool isGreen, Color color) {
+    auto centerWidth = width / 2;
+    auto centerHeight = height / 2;
+    glBegin(GL_LINE_LOOP);
+    glColor3f(color.R, color.G, color.B);
+    glVertex2f(-centerWidth, -centerHeight);
+    glVertex2f(centerWidth, -centerHeight);
+    glVertex2f(centerWidth, centerHeight);
+    glVertex2f(-centerWidth, centerHeight);
+    glEnd();
+
+    if (isGreen) {
+        glTranslatef(0, centerHeight /2, 0);
+        glColor3f(0, 1, 0);
+    } else {
+        glTranslatef(0, -centerHeight /2, 0);
+        glColor3f(1, 0, 0);
+    }
+
+    glBegin(GL_QUADS);
+    auto size = 0.007f;
+    glVertex2f(-size, -size);
+    glVertex2f(size, -size);
+    glVertex2f(size, size);
+    glVertex2f(-size, size);
+    glEnd();
+}
+
+void RenderTrafficLight(Transform transform, bool directionAllowed[], Color color) {
+    auto x = transform.X;
+    auto y = transform.Y;
+    auto rotationInDegrees = 0;
+    auto width = 0.03f;
+    auto height = 0.05f;
+    auto lightX = 0.075f;
+    auto lightY = 0.08f;
+
+    glPushMatrix();
+    glTranslatef(x / 10000.f, y / 10000.f, 0);
+
+    glPushMatrix();
+    glTranslatef(lightX, -lightY, 0);
+    RenderLightBox(width, height, directionAllowed[3], color);
+    glPopMatrix();
+
+    glPushMatrix();
+    rotationInDegrees = -90;
+    glRotatef(rotationInDegrees, 0.0f, 0.0f, 1.0f);
+    glTranslatef(lightX, -lightY, 0);
+    RenderLightBox(width, height, directionAllowed[0], color);
+    glPopMatrix();
+
+    glPushMatrix();
+    rotationInDegrees = 180;
+    glRotatef(rotationInDegrees, 0.0f, 0.0f, 1.0f);
+    glTranslatef(lightX, -lightY, 0);
+    RenderLightBox(width, height, directionAllowed[1], color);
+    glPopMatrix();
+
+    glPushMatrix();
+    rotationInDegrees = 90;
+    glRotatef(rotationInDegrees, 0.0f, 0.0f, 1.0f);
+    glTranslatef(lightX, -lightY, 0);
+    RenderLightBox(width, height, directionAllowed[2], color);
+    glPopMatrix();
+
     glPopMatrix();
 }
 
@@ -151,22 +222,28 @@ void reshape(GLsizei width, GLsizei height) {  // GLsizei for non-negative integ
     }
 }
 
-void Setup(int argc, char **argv, void (*loop)()) {
-    glutInit(&argc, argv);          // Initialize GLUT
-    glutInitDisplayMode(GLUT_DOUBLE);  // Enable double buffered mode
-    glutInitWindowSize(640 * 2, 480 * 2);   // Set the window's initial width & height - non-square
-    glutInitWindowPosition(50, 50); // Position the window's initial top-left corner
-    glutCreateWindow("Traffic Simulator");  // Create window with the given title
-    glutDisplayFunc(loop);       // Register callback handler for window re-paint event
-    glutReshapeFunc(reshape);       // Register callback handler for window re-size event
-    glutTimerFunc(500, Timer, 0);     // First timer call after 500 ms
-
-    initGL();                       // Our own OpenGL initialization
-}
-
 namespace Ecs::Systems {
+
+    Render::InputHandler *Render::Instance;
+
+    void Render::Setup(int argc, char **argv, void (*loop)()) {
+        glutInit(&argc, argv);          // Initialize GLUT
+        glutInitDisplayMode(GLUT_DOUBLE);  // Enable double buffered mode
+        glutInitWindowSize(640 * 2, 480 * 2);   // Set the window's initial width & height - non-square
+        glutInitWindowPosition(50, 50); // Position the window's initial top-left corner
+        glutCreateWindow("Traffic Simulator");  // Create window with the given title
+        glutKeyboardFunc(InputHandler::KeyPressedWrapper);
+        glutDisplayFunc(loop);       // Register callback handler for window re-paint event
+        glutReshapeFunc(reshape);       // Register callback handler for window re-size event
+        glutTimerFunc(500, Timer, 0);     // First timer call after 500 ms
+
+        initGL();                       // Our own OpenGL initialization
+    }
+
+
     Render::Render(World &world, void (*loop)()) : System(world) {
         SetRequiredComponents<Transform, Ecs::Components::Render>();
+        Instance = new InputHandler(world);
         Setup(0, nullptr, loop);
     }
 
@@ -199,6 +276,10 @@ namespace Ecs::Systems {
 
                 RenderRoad(firstTransform, secondTransform, r.Color);
             }
+        } else if (r.Type == "trafficLight") {
+            auto directionAllowed = world.GetComponent<Ecs::Components::TrafficLight>(e.GetId()).IsDirectionAllowed;
+            auto transform = world.GetComponent<Transform>(e.GetId());
+            RenderTrafficLight(transform, directionAllowed, r.Color);
         }
 
     }
@@ -207,4 +288,40 @@ namespace Ecs::Systems {
         glutMainLoop();     // Enter the infinite event-processing loop
     }
 
+    Render::~Render() {
+        delete Instance;
+    }
+
+    Render::InputHandler::InputHandler(World &world) : System(world) {
+        SetRequiredComponents<Ecs::Components::TrafficLight>();
+    }
+
+    void Render::InputHandler::OnUpdate(Entity e) {
+        auto &tl = world.GetComponent<Ecs::Components::TrafficLight>(e.GetId());
+        if (Increase)
+            tl.CountsBeforeChange += 10;
+        else if (tl.CountsBeforeChange != 0) {
+            tl.CountsBeforeChange -= 10;
+        }
+    }
+
+    void Render::InputHandler::KeyPressed(unsigned char key, int x, int y) {
+
+        switch (key) {
+            case '+' :
+                Increase = true;
+                Update();
+                break;
+            case '-' :
+                Increase = false;
+                Update();
+                break;
+            default:
+                break;
+        }
+    }
+
+    void Render::InputHandler::KeyPressedWrapper(unsigned char key, int x, int y) {
+        Instance->KeyPressed(key, x, y);
+    }
 }
