@@ -4,7 +4,7 @@
 
 #include "TrafficLight.h"
 
-Ecs::Components::TrafficLight::TrafficLight() : IsDirectionAllowed{true, false, true, false}, CountsBeforeChange(200),
+Ecs::Components::TrafficLight::TrafficLight() : IsDirectionAllowed{true, false, true, false}, CountsBeforeChange(300),
                                                 LastChangedCounter(0) {
 
 }

@@ -17,21 +17,9 @@ void initGL() {
 
 // Called back when timer expired
 void Timer(int value) {
-    int refreshMills = 16; // refresh interval in milliseconds
-    glutPostRedisplay();      // Post re-paint request to activate display()
+    auto refreshMills = 16; // refresh interval in milliseconds
+    glutPostRedisplay();      // Post re-paint request to activate call to Loop
     glutTimerFunc(refreshMills, Timer, 0); // next Timer call milliseconds later
-}
-
-// Handler for window-repaint event. Call back when the window first appears and
-// whenever the window needs to be re-painted.
-void display() {
-    glClear(GL_COLOR_BUFFER_BIT);   // Clear the color buffer
-    glMatrixMode(GL_MODELVIEW);     // To operate on Model-View matrix
-
-
-    glutSwapBuffers();   // Double buffered - swap the front and back buffers
-
-    // Change the rotational angle after each display()
 }
 
 void RenderRectangle(GLfloat x, GLfloat y, GLfloat directionInDegrees, Color color) {
@@ -236,7 +224,8 @@ namespace Ecs::Systems {
         glutKeyboardFunc(InputHandler::KeyPressedWrapper);
         glutDisplayFunc(loop);       // Register callback handler for window re-paint event
         glutReshapeFunc(reshape);       // Register callback handler for window re-size event
-        glutTimerFunc(500, Timer, 0);     // First timer call after 500 ms
+        auto firstCallDelay = 500u;
+        glutTimerFunc(firstCallDelay, Timer, 0);
 
         initGL();                       // Our own OpenGL initialization
     }

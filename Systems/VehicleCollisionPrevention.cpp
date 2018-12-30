@@ -53,7 +53,7 @@ int Ecs::Systems::VehicleCollisionPrevention::DistanceBetween(Transform transfor
 
 bool Ecs::Systems::VehicleCollisionPrevention::SameDirection(Transform transform, Transform otherTransform) {
     auto result = std::abs(transform.Orientation - otherTransform.Orientation);
-    return result < 40;
+    return result < 100;
 }
 
 bool Ecs::Systems::VehicleCollisionPrevention::LastVehicle(Transform transform, Transform otherTransform) {
