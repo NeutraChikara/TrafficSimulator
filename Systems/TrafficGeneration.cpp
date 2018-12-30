@@ -16,8 +16,8 @@ void Ecs::Systems::TrafficGeneration::Update() {
 
     //How many should be generated should create Cause
     if (Ticks == 0) {
-        auto minTicks = 30;
-        auto maxTicks = 60;
+        auto minTicks = 10;
+        auto maxTicks = 20;
         Ticks = rand() % (maxTicks - minTicks) + minTicks;
         GenerateCar();
     } else --Ticks;

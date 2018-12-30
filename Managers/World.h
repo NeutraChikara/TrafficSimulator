@@ -25,7 +25,7 @@ namespace Ecs::Managers {
 
     class World {
     public:
-        static const uint8_t EntityCount = 100;
+        static const unsigned int EntityCount = 1000;
 
         Entity CreateEntity();
 
