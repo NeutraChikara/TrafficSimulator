@@ -15,7 +15,7 @@ void Ecs::Systems::VehicleCollisionPrevention::OnUpdate(Entity e) {
     auto &velocity = world.GetComponent<Movement>(e.GetId());
     bool inTraffic = false;
     int i = 0;
-    std::for_each(world.mask.begin(), world.mask.end(),
+    std::for_each(world.Mask.begin(), world.Mask.end(),
                   [&](int mask) {
                       if (HasRequiredComponents(mask) && i != e.GetId()) {
                           auto otherTransform = world.GetComponent<Transform>(i);
