@@ -7,7 +7,7 @@ namespace Ecs::Systems {
 
     void System::Update() {
         int i = 0;
-        std::for_each(world.mask.begin(), world.mask.end(), [&]( int mask) {
+        std::for_each(world.Mask.begin(), world.Mask.end(), [&]( int mask) {
             if (HasRequiredComponents(mask))
                 OnUpdate(i);
             i++;
