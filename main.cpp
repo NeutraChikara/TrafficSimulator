@@ -16,7 +16,7 @@
 #include "Managers/World.h"
 #include "Systems/Logger.h"
 #include "Systems/Drive.h"
-#include "Components/SpeedAndAcceleration.h"
+#include "Components/Movement.h"
 #include "Systems/Render.h"
 #include "Components/Path.h"
 #include "Systems/TrafficLight.h"
@@ -52,7 +52,7 @@ std::unique_ptr<TrafficGeneration> trafficGeneration;
 
 void CreateCarEntity(int x, int y, int speed, Path path, Color color) {
     auto entity = world.CreateEntity();
-    world.AddComponent(SpeedAndAcceleration(speed), entity);
+    world.AddComponent(Movement(speed), entity);
     world.AddComponent(Transform(x, y, 0), entity);
     world.AddComponent(std::move(path), entity);
     world.AddComponent(Ecs::Components::Render("car", color), entity);

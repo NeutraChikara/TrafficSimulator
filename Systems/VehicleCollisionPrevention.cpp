@@ -7,12 +7,12 @@
 #include <cmath>
 
 Ecs::Systems::VehicleCollisionPrevention::VehicleCollisionPrevention(World &world) : System(world) {
-    SetRequiredComponents<Transform, SpeedAndAcceleration>();
+    SetRequiredComponents<Transform, Movement>();
 }
 
 void Ecs::Systems::VehicleCollisionPrevention::OnUpdate(Entity e) {
     auto transform = world.GetComponent<Transform>(e.GetId());
-    auto &velocity = world.GetComponent<SpeedAndAcceleration>(e.GetId());
+    auto &velocity = world.GetComponent<Movement>(e.GetId());
     bool inTraffic = false;
     int i = 0;
     std::for_each(world.mask.begin(), world.mask.end(),

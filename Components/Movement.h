@@ -9,8 +9,8 @@
 #include "Component.h"
 
 namespace Ecs::Components {
-    struct SpeedAndAcceleration : Component {
-        SpeedAndAcceleration(unsigned int maxSpeed = 20, unsigned int speed = 0, unsigned int acceleration = 1,
+    struct Movement : Component {
+        Movement(unsigned int maxSpeed = 20, unsigned int speed = 0, unsigned int acceleration = 1,
                              unsigned int deceleration = 2);
 
         int Speed; // TODO: lav til doubles

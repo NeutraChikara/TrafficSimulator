@@ -7,7 +7,7 @@
 
 #include "../Entities/Entity.h"
 #include "../Components/ComponentUtility.h"
-#include "../Components/SpeedAndAcceleration.h"
+#include "../Components/Movement.h"
 #include "../Components/Transform.h"
 #include "../Components/Path.h"
 #include "../Components/TrafficLight.h"
@@ -21,7 +21,7 @@ namespace Ecs::Managers {
     using namespace Ecs::Components;
     using namespace Ecs::Entities;
 
-    typedef std::tuple<SpeedAndAcceleration, Transform, Ecs::Components::Path, TrafficLight, Ecs::Components::Render, RoadGraph> Components;
+    typedef std::tuple<Movement, Transform, Ecs::Components::Path, TrafficLight, Ecs::Components::Render, RoadGraph> Components;
 
     class World {
     public:

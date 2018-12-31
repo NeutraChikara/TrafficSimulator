@@ -44,7 +44,7 @@ void Ecs::Systems::TrafficGeneration::GenerateCar() {
 
 void Ecs::Systems::TrafficGeneration::CreateCarEntity(int x, int y, int speed, Path path, Color color) {
     auto entity = world.CreateEntity();
-    world.AddComponent(SpeedAndAcceleration(speed), entity);
+    world.AddComponent(Movement(speed), entity);
     world.AddComponent(Transform(x, y, 0), entity);
     world.AddComponent(std::move(path), entity);
     world.AddComponent(Ecs::Components::Render("car", color), entity);

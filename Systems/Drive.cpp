@@ -4,7 +4,7 @@
 
 #include "Drive.h"
 #include "../Components/Transform.h"
-#include "../Components/SpeedAndAcceleration.h"
+#include "../Components/Movement.h"
 #include "../Components/TrafficLight.h"
 #include <boost/math/constants/constants.hpp>
 #include <cmath>
@@ -13,12 +13,12 @@ using namespace Ecs::Components;
 
 namespace Ecs::Systems {
     Drive::Drive(World &world) : System(world) {
-        SetRequiredComponents<Transform, SpeedAndAcceleration, Path>();
+        SetRequiredComponents<Transform, Movement, Path>();
     }
 
     void Drive::OnUpdate(Entity e) {
         auto &transform = world.GetComponent<Transform>(e.GetId());
-        auto &vel = world.GetComponent<SpeedAndAcceleration>(e.GetId());
+        auto &vel = world.GetComponent<Movement>(e.GetId());
         auto &path = world.GetComponent<Path>(e.GetId());
 
         auto node = path.Nodes[path.IndexOfCurrentNode];
